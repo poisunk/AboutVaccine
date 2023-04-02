@@ -1,0 +1,32 @@
+body{
+    background: url("../image/image.jpg") no-repeat fixed left top;
+    text-align: center;
+}
+
+p.one{
+    border-style: solid;
+    border-width: thick;
+    border-radius: 10px;
+    margin: auto
+}
+
+p.two{
+    border: thick groove saddlebrown;
+}
+
+p.three{
+    border-top-style: groove;
+    border-right-style: outset;
+    border-bottom-style: dotted;
+    border-left-style: inherit;
+    border-width: thick;
+}
+
+.text{
+    background: white;
+    color: black;
+    text-align: center;
+    border: 10px solid white;
+    border-radius: 10px;
+    margin: 0px 50px 0px 50px;
+}
