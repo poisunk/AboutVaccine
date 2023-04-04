@@ -99,7 +99,15 @@ func GetAdverseEvent(c *gin.Context) {
 
 func DeleteAdverseEvent(c *gin.Context) {
 	// 获取id
-	id, _ := strconv.ParseInt(c.Query("id"), 10, 64)
+	s := c.Query("id")
+	if len(s) == 0 {
+		c.JSON(http.StatusOK, Response{
+			Code:    config.FailureStatus,
+			Message: "id不能为空！",
+		})
+		return
+	}
+	id, _ := strconv.ParseInt(s, 10, 64)
 	// 获取服务
 	var aService = service.InitAdverseEventService()
 	// 根据id删除

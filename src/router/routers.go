@@ -39,7 +39,7 @@ func SetupRouters() *gin.Engine {
 		// 不良反应
 		apiGroup.POST("/adverse", jwt.Auth, controller.CreateAdverseEvent)
 		apiGroup.GET("/adverse", controller.GetAdverseEvent)
-		apiGroup.DELETE("/adverse", controller.DeleteAdverseEvent)
+		apiGroup.DELETE("/adverse", jwt.Auth, controller.DeleteAdverseEvent)
 		// OAE相关数据
 		apiGroup.GET("/oae/label", controller.GetOaeTermsByLabel)
 		apiGroup.GET("/oae/IRI", controller.GetOaeTermByIRI)

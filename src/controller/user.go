@@ -114,7 +114,7 @@ func Logout(c *gin.Context) {
 func GetUserList(c *gin.Context) {
 	// page, pageSize
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	// 准备服务
 	uService := service.InitUserService()
 	// 获取用户列表

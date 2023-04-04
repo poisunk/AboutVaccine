@@ -41,6 +41,7 @@ func CreateAVaccineCFDA(c *gin.Context) {
 }
 
 // GetVaccineCFDAList 查询CFDA疫苗数据
+// 可选参数: page, pageSize, productName
 func GetVaccineCFDAList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
@@ -73,7 +74,15 @@ func GetVaccineCFDAList(c *gin.Context) {
 }
 
 func DeleteVaccineCFDAByID(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Query("id"))
+	s := c.Query("id")
+	if len(s) == 0 {
+		c.JSON(http.StatusOK, Response{
+			Code:    config.FailureStatus,
+			Message: "id不能为空！",
+		})
+		return
+	}
+	id, _ := strconv.Atoi(s)
 
 	// 创建服务
 	var vService = service.InitVaccineService()
