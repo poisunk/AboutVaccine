@@ -33,3 +33,24 @@ func GetVaersSymptomListBySymptomId(id int64, page, pageSize int) (v []*VaersSym
 	}
 	return v, nil
 }
+
+func CountVaersSymptomByVaersId(id int64) (count int64, err error) {
+	if err = dao.DB.Where("vaers_id = ?", id).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func CountVaersSymptom() (count int64, err error) {
+	if err = dao.DB.Model(VaersSymptom{}).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func GetVaersIdListBySymptomId(id int64) (list []*VaersSymptom, err error) {
+	if err = dao.DB.Select("vaers_id").Where("symptom_id = ?", id).Find(&list).Error; err != nil {
+		return nil, err
+	}
+	return list, nil
+}

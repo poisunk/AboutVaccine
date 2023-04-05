@@ -35,3 +35,17 @@ func GetVaersVaxListByVaxId(vaxId int64, page, pageSize int) (list []*VaersVax, 
 	}
 	return list, nil
 }
+
+func GetVaersIdByVaxId(vaxId int64) (list []*VaersVax, err error) {
+	if err = dao.DB.Select("vaers_id").Where("`vax_id` = ?", vaxId).Find(&list).Error; err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func CountVaersVaxByVaersId(vaersId int64) (count int64, err error) {
+	if err = dao.DB.Model(&VaersVax{}).Where("vaers_id = ?", vaersId).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+}
