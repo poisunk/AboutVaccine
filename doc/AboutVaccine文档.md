@@ -332,3 +332,36 @@ http://43.140.194.248:8080/api
 
 **调用例子**：/questionnaire/15/response?token=...&responseId=16
 
+# 检索Vaers数据
+
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
+
+**必选参数**：`vaccineId`：疫苗id，`symptomId`：症状Id，二者必须选填其一
+
+**接口地址**：`GET` /vaers
+
+**调用例子**：/vaers?page=1&pageSize=5&vaccineId=72
+
+# 获取Vaers数据
+
+**路径参数**：`vaersId`：Vaers数据Id
+
+**接口地址**：`GET` /vaers/:vaersId
+
+**调用例子**：/vaers/:2547730
+
+# 获取Vaers的疫苗列表
+
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20，`keyword`：疫苗名称
+
+**接口地址**：`GET` /vaers/vaccine
+
+**调用例子**：/vaers/vaccine?page=1&pageSize=5&keyword=COVID
+
+# 获取Vaers的症状列表
+
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20，`keyword`：症状名称
+
+**接口地址**：`GET` /vaers/symptom
+
+**调用例子**：/vaers/symptom?page=1&pageSize=5&keyword=EYE
