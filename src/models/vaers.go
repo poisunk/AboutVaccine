@@ -21,6 +21,7 @@ func (v *Vaers) TableName() string {
 }
 
 func GetVaersByVaersId(vid int64) (v *Vaers, err error) {
+	v = &Vaers{}
 	if err = dao.DB.Where("vaers_id = ?", vid).First(&v).Error; err != nil {
 		return nil, err
 	}
@@ -28,6 +29,7 @@ func GetVaersByVaersId(vid int64) (v *Vaers, err error) {
 }
 
 func GetVaersById(id int64) (v *Vaers, err error) {
+	v = &Vaers{}
 	if err = dao.DB.Where("id = ?", id).First(&v).Error; err != nil {
 		return nil, err
 	}

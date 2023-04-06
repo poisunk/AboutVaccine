@@ -48,11 +48,11 @@ func (vs *VaersVaxServiceImpl) GetVaersVaxListByVaersId(vid int64) (list []*Vaer
 	return list, nil
 }
 
-func (vs *VaersVaxServiceImpl) GetVaersVaxTermList(keyword string, page, pageSize int) (list []*VaersVaxTerm, err error) {
+func (vs *VaersVaxServiceImpl) GetVaersVaxTermList(keyword string, page, pageSize int) (list []*VaersVaxTerm, total int64, err error) {
 	termList, err := models.GetVaersVaxTermListByName(keyword, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
-		return nil, errors.New("查询VaersTermList失败")
+		return nil, total, errors.New("查询VaersTermList失败")
 	}
 	for _, v := range termList {
 		list = append(list, &VaersVaxTerm{
@@ -62,7 +62,12 @@ func (vs *VaersVaxServiceImpl) GetVaersVaxTermList(keyword string, page, pageSiz
 			Name:         v.Name,
 		})
 	}
-	return list, nil
+	total, err = models.CountVaersTermByName(keyword)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, total, errors.New("查询VaersTermList失败")
+	}
+	return list, total, nil
 }
 
 func (vs *VaersVaxServiceImpl) GetVaersIdListByVaxId(vaxId int64) (list []int64, err error) {

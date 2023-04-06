@@ -11,10 +11,11 @@ type VaersSymptomTerm struct {
 }
 
 func (v *VaersSymptomTerm) TableName() string {
-	return "vaers_symptom_terms"
+	return "vaers_symptom_term"
 }
 
 func GetVaersSymptomTermById(id int64) (v *VaersSymptomTerm, err error) {
+	v = &VaersSymptomTerm{}
 	if err = dao.DB.Where("id = ?", id).First(&v).Error; err != nil {
 		return nil, err
 	}

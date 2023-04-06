@@ -68,6 +68,11 @@ func SetupRouters() *gin.Engine {
 		apiGroup.DELETE("/questionnaire/:id/response", jwt.Auth, controller.DeleteResponse)
 		apiGroup.GET("/questionnaire/response/mine", jwt.Auth, controller.GetMineResponse)
 		apiGroup.POST("/questionnaire/:id/response", jwt.Auth, controller.CreateResponse)
+		// Vaers不良反应检索
+		apiGroup.GET("/vaers", controller.SearchVaers)
+		apiGroup.GET("/vaers/:vaersId", controller.GetVaers)
+		apiGroup.GET("/vaers/symptom", controller.GetVaersSymptomList)
+		apiGroup.GET("/vaers/vaccine", controller.GetVaersVaccineList)
 	}
 
 	return r

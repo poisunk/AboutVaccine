@@ -4,7 +4,7 @@ type VaersVaxService interface {
 	GetVaersVaxListByVaersId(vaersId int64) (list []*VaersVax, err error)
 
 	GetVaersVaxTerm(id int64) (term *VaersVaxTerm, err error)
-	GetVaersVaxTermList(keyword string, page, pageSize int) (list []*VaersVaxTerm, err error)
+	GetVaersVaxTermList(keyword string, page, pageSize int) (list []*VaersVaxTerm, total int64, err error)
 
 	GetVaersIdListByVaxId(vaxId int64) (list []int64, err error)
 

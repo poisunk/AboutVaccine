@@ -5,8 +5,8 @@ import "time"
 type VaersService interface {
 	GetVaersByVaersId(vid int64) (vaers *Vaers, err error)
 	GetVaersResults(vaccineId, symptomId int64) (list *VaersResult, err error)
-	GetVaersResultsByVaccineId(vid int64) (list []*VaersResult, err error)
-	GetVaersResultsBySId(sid int64) (list []*VaersResult, err error)
+	GetVaersResultsByVaccineId(vid int64, page int, pageSize int) (list []*VaersResult, total int64, err error)
+	GetVaersResultsBySymptomId(sid int64, page int, pageSize int) (list []*VaersResult, total int64, err error)
 }
 
 type Vaers struct {

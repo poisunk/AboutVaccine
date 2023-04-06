@@ -14,6 +14,7 @@ func (v *VaersSymptom) TableName() string {
 }
 
 func GetVaersSymptomById(id int64) (v *VaersSymptom, err error) {
+	v = &VaersSymptom{}
 	if err = dao.DB.Where("id = ?", id).First(&v).Error; err != nil {
 		return nil, err
 	}
@@ -49,7 +50,7 @@ func CountVaersSymptom() (count int64, err error) {
 }
 
 func GetVaersIdListBySymptomId(id int64) (list []*VaersSymptom, err error) {
-	if err = dao.DB.Select("vaers_id").Where("symptom_id = ?", id).Find(&list).Error; err != nil {
+	if err = dao.DB.Select("vaers_id").Where("symptom_id = ?", id).Limit(10).Find(&list).Error; err != nil {
 		return nil, err
 	}
 	return list, nil
