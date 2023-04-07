@@ -14,16 +14,16 @@ func Auth(c *gin.Context) {
 	var uid string
 	if len(auth) == 0 {
 		c.JSON(http.StatusOK, gin.H{
-			"code":    config.FailureStatus,
-			"massage": "token is empty",
+			"status": config.FailureStatus,
+			"msg":    "token is empty",
 		})
 		c.Abort()
 	} else {
 		token, err := ParseToken(auth)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code":    config.FailureStatus,
-				"massage": "token is invalid",
+				"status": config.FailureStatus,
+				"msg":    "token is invalid",
 			})
 			c.Abort()
 		} else {

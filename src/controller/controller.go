@@ -6,9 +6,9 @@ import (
 )
 
 type Response struct {
-	Code    int64  `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
+	Code    int64       `json:"status"`
+	Message string      `json:"msg"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
 func IndexHandler(c *gin.Context) {
