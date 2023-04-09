@@ -356,7 +356,7 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`GET` /vaers/vaccine
 
-**调用例子**：/vaers/vaccine?page=1&pageSize=5&keyword=COVID
+**调用例子**：/vaers/vaccine?page=1&pageSize=5&keyword=COVId
 
 # 获取Vaers的症状列表
 

@@ -4,7 +4,7 @@ type QuestionService interface {
 	GetQuestionList(qid int64) ([]*Question, error)
 	GetQuestionTypeList() []string
 	CreateQuestion(q []*Question) error
-	DeleteQuestionByID(id int64) error
+	DeleteQuestionById(id int64) error
 }
 
 var QuestionType = map[string]bool{
@@ -17,7 +17,7 @@ var QuestionType = map[string]bool{
 }
 
 type Question struct {
-	ID              int64    `json:"id"`
+	Id              int64    `json:"id"`
 	QuestionnaireId int64    `json:"questionnaireId"`
 	Type            string   `json:"type"`
 	Content         string   `json:"content"`

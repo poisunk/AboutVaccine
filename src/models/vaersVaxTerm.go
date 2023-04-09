@@ -6,7 +6,7 @@ import (
 )
 
 type VaersVaxTerm struct {
-	ID           int64  `json:"id"`
+	Id           int64  `json:"id"`
 	Type         string `json:"type"`
 	Manufacturer string `json:"manufacturer"`
 	Name         string `json:"name"`

@@ -10,7 +10,7 @@ type AdverseEventService interface {
 }
 
 type AdverseEvent struct {
-	ID                  int64             `json:"id"`
+	Id                  int64             `json:"id"`
 	Uid                 int64             `json:"uid"`
 	Code                string            `json:"code"`
 	Name                string            `json:"name"`
@@ -29,7 +29,7 @@ type AdverseEvent struct {
 }
 
 type AdverseVaccine struct {
-	ID            int64      `json:"id"`
+	Id            int64      `json:"id"`
 	Type          string     `json:"type"`
 	Manufacturer  string     `json:"manufacturer"`
 	Name          string     `json:"name"`

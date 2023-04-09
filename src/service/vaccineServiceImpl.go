@@ -91,7 +91,7 @@ func (service *VaccineServiceImpl) GetVaccineExampleList(page int, pageSize int,
 		return nil, 0, errors.New("数据库错误！")
 	}
 	for _, t := range tList {
-		vList, err := models.GetVaccineListByTid(t.ID, limit+1)
+		vList, err := models.GetVaccineListByTid(t.Id, limit+1)
 		if err != nil {
 			log.Println(err.Error())
 			return nil, 0, errors.New("数据库错误！")

@@ -12,7 +12,7 @@ type ResponseService interface {
 }
 
 type Response struct {
-	ID               int64           `json:"id"`
+	Id               int64           `json:"id"`
 	QuestionnaireId  int64           `json:"questionnaireId"`
 	UserId           int64           `json:"userId"`
 	UserName         string          `json:"userName"`
@@ -21,7 +21,7 @@ type Response struct {
 }
 
 type ResponseTerm struct {
-	ID         int64  `json:"id"`
+	Id         int64  `json:"id"`
 	QuestionId int64  `json:"questionId"`
 	Answer     string `json:"answer"`
 }

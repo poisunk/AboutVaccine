@@ -6,7 +6,7 @@ import (
 )
 
 type Response struct {
-	ID              int64     `gorm:"int(11);column:id;primary_key" json:"id"`
+	Id              int64     `gorm:"int(11);column:id;primary_key" json:"id"`
 	QuestionnaireId int64     `gorm:"int(11);column:questionnaire_id" json:"questionnaireId"`
 	UserId          int64     `gorm:"int(11);column:user_id" json:"userId"`
 	ResponseTime    time.Time `gorm:"autoCreateTime;datetime;column:response_time" json:"responseTime"`

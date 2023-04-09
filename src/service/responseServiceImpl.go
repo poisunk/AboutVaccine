@@ -35,13 +35,13 @@ func (rs *ResponseServiceImpl) GetResponsesByQid(qid int64, page, pageSize int) 
 			return nil, 0, err
 		}
 		temp := &Response{
-			ID:              r.ID,
+			Id:              r.Id,
 			QuestionnaireId: r.QuestionnaireId,
 			UserId:          r.UserId,
 			UserName:        u.Nickname,
 			ResponseTime:    r.ResponseTime,
 		}
-		terms, err := rs.GetResponseTermsByRid(r.ID)
+		terms, err := rs.GetResponseTermsByRid(r.Id)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -64,13 +64,13 @@ func (rs *ResponseServiceImpl) GetResponseByUid(uid int64, page, pageSize int) (
 			return nil, 0, err
 		}
 		temp := &Response{
-			ID:              r.ID,
+			Id:              r.Id,
 			QuestionnaireId: r.QuestionnaireId,
 			UserId:          r.UserId,
 			UserName:        u.Nickname,
 			ResponseTime:    r.ResponseTime,
 		}
-		terms, err := rs.GetResponseTermsByRid(r.ID)
+		terms, err := rs.GetResponseTermsByRid(r.Id)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -100,7 +100,7 @@ func (rs *ResponseServiceImpl) CreateResponse(r *Response) (err error) {
 	// 1. 回答questionId不能为空
 	for _, v := range r.ResponseTermList {
 		if v.QuestionId == 0 {
-			return errors.New("问题ID不能为空")
+			return errors.New("问题Id不能为空")
 		}
 	}
 	err = models.CreateResponse(response)
@@ -112,7 +112,7 @@ func (rs *ResponseServiceImpl) CreateResponse(r *Response) (err error) {
 		term := &models.ResponseTerm{
 			QuestionId: v.QuestionId,
 			Answer:     v.Answer,
-			ResponseID: response.ID,
+			ResponseId: response.Id,
 		}
 		err = models.CreateResponseTerm(term)
 		if err != nil {
@@ -124,14 +124,14 @@ func (rs *ResponseServiceImpl) CreateResponse(r *Response) (err error) {
 }
 
 func (rs *ResponseServiceImpl) GetResponseTermsByRid(rid int64) (r []*ResponseTerm, err error) {
-	response, err := models.GetResponseTermListByRID(rid)
+	response, err := models.GetResponseTermListByRId(rid)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("获取问卷答案列表失败")
 	}
 	for _, v := range response {
 		r = append(r, &ResponseTerm{
-			ID:         v.ID,
+			Id:         v.Id,
 			QuestionId: v.QuestionId,
 			Answer:     v.Answer,
 		})

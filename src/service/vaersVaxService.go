@@ -12,7 +12,7 @@ type VaersVaxService interface {
 }
 
 type VaersVax struct {
-	ID           int64  `json:"id"`
+	Id           int64  `json:"id"`
 	VaersId      int64  `json:"vaersId"`
 	Type         string `json:"type"`
 	Manufacturer string `json:"manufacturer"`
@@ -24,7 +24,7 @@ type VaersVax struct {
 }
 
 type VaersVaxTerm struct {
-	ID           int64  `json:"id"`
+	Id           int64  `json:"id"`
 	Type         string `json:"type"`
 	Manufacturer string `json:"manufacturer"`
 	Name         string `json:"name"`

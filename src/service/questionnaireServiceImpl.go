@@ -70,12 +70,12 @@ func (s *QuestionnaireServiceImpl) CreateQuestionnaire(questionnaire *Questionna
 		log.Println(err.Error())
 		return errors.New("创建问卷失败")
 	}
-	questionnaire.ID = q.ID
+	questionnaire.Id = q.Id
 	return nil
 }
 
-func (s *QuestionnaireServiceImpl) DeleteQuestionnaireByID(id int64) error {
-	err := models.DeleteQuestionnaireByID(id)
+func (s *QuestionnaireServiceImpl) DeleteQuestionnaireById(id int64) error {
+	err := models.DeleteQuestionnaireById(id)
 	if err != nil {
 		log.Println(err.Error())
 		return errors.New("删除问卷失败")
@@ -94,8 +94,8 @@ func (s *QuestionnaireServiceImpl) GetQuestionnaireById(id int64) (*Questionnair
 	return t, nil
 }
 
-func (s *QuestionnaireServiceImpl) GetQuestionnaireOwnerIdByID(id int64) (uid int64, err error) {
-	uid, err = models.GetQuestionnaireOwnerIdByID(id)
+func (s *QuestionnaireServiceImpl) GetQuestionnaireOwnerIdById(id int64) (uid int64, err error) {
+	uid, err = models.GetQuestionnaireOwnerIdById(id)
 	if err != nil {
 		log.Println(err.Error())
 		return 0, errors.New("获取问卷失败")

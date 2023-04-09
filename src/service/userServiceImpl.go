@@ -33,7 +33,7 @@ func (service *UserServiceImpl) Login(user User) (token string, err error) {
 		return "", errors.New("密码不正确！")
 	}
 	// 生成token
-	if token, err = jwt.GenerateToken(int64(u.UID), u.Nickname); err != nil {
+	if token, err = jwt.GenerateToken(int64(u.UId), u.Nickname); err != nil {
 		log.Println(err.Error())
 		return "", errors.New("token生成失败！")
 	}
@@ -60,7 +60,7 @@ func (service *UserServiceImpl) Register(user User) (token string, err error) {
 		return "", errors.New("注册失败！")
 	}
 	// 生成token
-	if token, err = jwt.GenerateToken(int64(u.UID), u.Nickname); err != nil {
+	if token, err = jwt.GenerateToken(int64(u.UId), u.Nickname); err != nil {
 		log.Println(err.Error())
 		return "", errors.New("token生成失败！")
 	}
@@ -76,7 +76,7 @@ func (service *UserServiceImpl) Logout(token string) (err error) {
 	}
 	// 删除用户
 	uid, _ := strconv.ParseInt(claim.Id, 10, 64)
-	if err = models.DeleteUserByID(uid); err != nil {
+	if err = models.DeleteUserById(uid); err != nil {
 		log.Println(err.Error())
 		return errors.New("注销失败！")
 	}
@@ -109,7 +109,7 @@ func (service *UserServiceImpl) GetUserList(page, size int) ([]*User, int64, err
 	var list []*User
 	for _, u := range users {
 		list = append(list, &User{
-			ID:       u.UID,
+			Id:       u.UId,
 			Nickname: u.Nickname,
 		})
 	}
@@ -129,7 +129,7 @@ func (service *UserServiceImpl) GetUser(uid int64) (*User, error) {
 		return nil, errors.New("获取用户失败！")
 	}
 	return &User{
-		ID:       u.UID,
+		Id:       u.UId,
 		Nickname: u.Nickname,
 	}, nil
 }

@@ -73,7 +73,7 @@ func GetVaccineCFDAList(c *gin.Context) {
 	})
 }
 
-func DeleteVaccineCFDAByID(c *gin.Context) {
+func DeleteVaccineCFDAById(c *gin.Context) {
 	s := c.Query("id")
 	if len(s) == 0 {
 		c.JSON(http.StatusOK, Response{

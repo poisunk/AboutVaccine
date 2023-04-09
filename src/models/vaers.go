@@ -6,7 +6,7 @@ import (
 )
 
 type Vaers struct {
-	ID             int64      `json:"id"`
+	Id             int64      `json:"id"`
 	VaersId        int64      `json:"vaersId"`
 	CreateDate     time.Time  `json:"createDate"`
 	Sex            string     `json:"sex"`

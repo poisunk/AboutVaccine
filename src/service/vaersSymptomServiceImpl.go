@@ -32,7 +32,7 @@ func (vs *VaersSymptomServiceImpl) GetVaersSymptomListByVaersId(vid int64) (list
 	// 组装数据
 	for _, v := range l {
 		list = append(list, &VaersSymptom{
-			ID:        v.ID,
+			Id:        v.Id,
 			VaersId:   v.VaersId,
 			Symptom:   v.Symptom,
 			SymptomId: v.SymptomId,
@@ -51,7 +51,7 @@ func (vs *VaersSymptomServiceImpl) GetVaersSymptomTermList(keyword string, page,
 	// 组装数据
 	for _, v := range l {
 		list = append(list, &VaersSymptomTerm{
-			ID:      v.ID,
+			Id:      v.Id,
 			Symptom: v.Symptom,
 		})
 	}
@@ -74,7 +74,7 @@ func (vs *VaersSymptomServiceImpl) GetVaersSymptomTerm(id int64) (term *VaersSym
 		return nil, errors.New("查询symptom失败")
 	}
 	term = &VaersSymptomTerm{
-		ID:      t.ID,
+		Id:      t.Id,
 		Symptom: t.Symptom,
 	}
 	return term, nil

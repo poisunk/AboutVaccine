@@ -34,7 +34,7 @@ func (vs *VaersVaxServiceImpl) GetVaersVaxListByVaersId(vid int64) (list []*Vaer
 			return nil, err
 		}
 		list = append(list, &VaersVax{
-			ID:           v.ID,
+			Id:           v.Id,
 			VaersId:      v.VaersId,
 			Type:         term.Type,
 			Manufacturer: term.Manufacturer,
@@ -56,7 +56,7 @@ func (vs *VaersVaxServiceImpl) GetVaersVaxTermList(keyword string, page, pageSiz
 	}
 	for _, v := range termList {
 		list = append(list, &VaersVaxTerm{
-			ID:           v.ID,
+			Id:           v.Id,
 			Type:         v.Type,
 			Manufacturer: v.Manufacturer,
 			Name:         v.Name,
@@ -89,7 +89,7 @@ func (vs *VaersVaxServiceImpl) GetVaersVaxTerm(id int64) (term *VaersVaxTerm, er
 		return nil, errors.New("查询VaersTerm失败")
 	}
 	term = &VaersVaxTerm{
-		ID:           vt.ID,
+		Id:           vt.Id,
 		Type:         vt.Type,
 		Manufacturer: vt.Manufacturer,
 		Name:         vt.Name,

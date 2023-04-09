@@ -14,7 +14,7 @@ type UserService interface {
 }
 
 type User struct {
-	ID       int    `json:"id"`
+	Id       int    `json:"id"`
 	Nickname string `json:"nickname"`
 	Password string `json:"password,omitempty"`
 }

@@ -50,8 +50,8 @@ func (service *QuestionServiceImpl) CreateQuestion(q []*Question) error {
 	return nil
 }
 
-func (service *QuestionServiceImpl) DeleteQuestionByID(id int64) error {
-	if err := models.DeleteQuestionByID(id); err != nil {
+func (service *QuestionServiceImpl) DeleteQuestionById(id int64) error {
+	if err := models.DeleteQuestionById(id); err != nil {
 		log.Println(err.Error())
 		return errors.New("删除问题失败！")
 	}
@@ -60,13 +60,13 @@ func (service *QuestionServiceImpl) DeleteQuestionByID(id int64) error {
 
 func (service *QuestionServiceImpl) GetQuestionList(qid int64) (q []*Question, err error) {
 	var qs []*models.Question
-	if qs, err = models.GetQuestionListByQID(qid); err != nil {
+	if qs, err = models.GetQuestionListByQId(qid); err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("获取问题失败！")
 	}
 	for _, qi := range qs {
 		q = append(q, &Question{
-			ID:              qi.ID,
+			Id:              qi.Id,
 			QuestionnaireId: qi.QuestionnaireId,
 			Type:            qi.Type,
 			Content:         qi.Content,

@@ -6,7 +6,7 @@ import (
 )
 
 type VaersSymptomTerm struct {
-	ID      int64  `json:"id"`
+	Id      int64  `json:"id"`
 	Symptom string `json:"symptom"`
 }
 

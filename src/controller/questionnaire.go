@@ -80,13 +80,13 @@ func GetQuestionnaireByUid(c *gin.Context) {
 
 }
 
-func DeleteQuestionnaireByID(c *gin.Context) {
+func DeleteQuestionnaireById(c *gin.Context) {
 	uid, _ := strconv.ParseInt(c.GetString("userId"), 10, 64)
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	// 准备服务
 	var qService = service.InitQuestionnaireService()
-	o, err := qService.GetQuestionnaireOwnerIdByID(id)
+	o, err := qService.GetQuestionnaireOwnerIdById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,
@@ -104,7 +104,7 @@ func DeleteQuestionnaireByID(c *gin.Context) {
 	}
 
 	// 删除
-	err = qService.DeleteQuestionnaireByID(int64(id))
+	err = qService.DeleteQuestionnaireById(int64(id))
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,

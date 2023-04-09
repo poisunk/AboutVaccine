@@ -18,7 +18,7 @@ func CreateAdverseEvent(c *gin.Context) {
 		})
 		return
 	}
-	// 检查登录信息，并得到用户ID
+	// 检查登录信息，并得到用户Id
 	uid, _ := strconv.ParseInt(c.GetString("userId"), 10, 64)
 	adverseEvent.Uid = uid
 

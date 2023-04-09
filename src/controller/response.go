@@ -15,7 +15,7 @@ func GetResponse(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
 	// 查询目标问卷
 	qaService := service.InitQuestionnaireService()
-	o, err := qaService.GetQuestionnaireOwnerIdByID(qid)
+	o, err := qaService.GetQuestionnaireOwnerIdById(qid)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,
@@ -71,7 +71,7 @@ func DeleteResponse(c *gin.Context) {
 	id, _ := strconv.ParseInt(s, 10, 64)
 	// 查询目标问卷
 	qaService := service.InitQuestionnaireService()
-	o, err := qaService.GetQuestionnaireOwnerIdByID(qid)
+	o, err := qaService.GetQuestionnaireOwnerIdById(qid)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,

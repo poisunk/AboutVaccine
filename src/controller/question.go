@@ -8,8 +8,8 @@ import (
 	"strconv"
 )
 
-// GetQuestionListByQID 获取问卷列表，通过id
-func GetQuestionListByQID(c *gin.Context) {
+// GetQuestionListByQId 获取问卷列表，通过id
+func GetQuestionListByQId(c *gin.Context) {
 	// 获取路径参数
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
@@ -63,7 +63,7 @@ func CreateQuestion(c *gin.Context) {
 	uid, _ := strconv.Atoi(c.GetString("userId"))
 	// 准备服务
 	qaService := service.InitQuestionnaireService()
-	o, err := qaService.GetQuestionnaireOwnerIdByID(id)
+	o, err := qaService.GetQuestionnaireOwnerIdById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,
@@ -133,7 +133,7 @@ func DeleteQuestion(c *gin.Context) {
 
 	// 准备服务
 	qaService := service.InitQuestionnaireService()
-	o, err := qaService.GetQuestionnaireOwnerIdByID(id)
+	o, err := qaService.GetQuestionnaireOwnerIdById(id)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,
@@ -151,7 +151,7 @@ func DeleteQuestion(c *gin.Context) {
 	}
 
 	qService := service.InitQuestionService()
-	err = qService.DeleteQuestionByID(qid)
+	err = qService.DeleteQuestionById(qid)
 	if err != nil {
 		c.JSON(http.StatusOK, Response{
 			Code:    config.FailureStatus,

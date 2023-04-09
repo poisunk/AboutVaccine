@@ -6,7 +6,7 @@ import (
 )
 
 type AdverseVaccine struct {
-	ID             int64      `json:"id"`
+	Id             int64      `json:"id"`
 	AdverseEventId int64      `json:"adverseEventId"`
 	VaccineId      int64      `json:"vaccineId"`
 	VaccinateDate  *time.Time `json:"vaccinateDate"`

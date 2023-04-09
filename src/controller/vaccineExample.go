@@ -15,8 +15,8 @@ type VaccineExample struct {
 	HasMore      bool              `json:"hasMore"`
 }
 
-// GetVaccineListExampleByTID 通过类型获得示例疫苗列表
-func GetVaccineListExampleByTID(c *gin.Context) {
+// GetVaccineListExampleByTId 通过类型获得示例疫苗列表
+func GetVaccineListExampleByTId(c *gin.Context) {
 	// 获取查询数量，默认为5
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "5"))
 	// 检查tid

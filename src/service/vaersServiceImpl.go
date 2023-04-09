@@ -37,7 +37,7 @@ func (vs *VaersServiceImpl) GetVaersByVaersId(vid int64) (vaers *Vaers, err erro
 	}
 	// 4. 组装数据
 	vaers = &Vaers{
-		ID:               v.ID,
+		Id:               v.Id,
 		VaersId:          v.VaersId,
 		CreateDate:       v.CreateDate,
 		Sex:              v.Sex,

@@ -10,7 +10,7 @@ type VaccineService interface {
 }
 
 type Vaccine struct {
-	ID                int64  `json:"id"`
+	Id                int64  `json:"id"`
 	Type              string `json:"type"`
 	RegisterNumber    string `json:"registerNumber"`
 	ProductName       string `json:"productName"`

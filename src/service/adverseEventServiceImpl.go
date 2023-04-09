@@ -41,8 +41,8 @@ func (service *AdverseEventServiceImpl) CreateAdverseEvent(event AdverseEvent) e
 	var adverseVaccineList []*models.AdverseVaccine
 	for _, v := range event.VaccineList {
 		av := &models.AdverseVaccine{
-			AdverseEventId: adverseEvent.ID,
-			VaccineId:      v.ID,
+			AdverseEventId: adverseEvent.Id,
+			VaccineId:      v.Id,
 			VaccinateDate:  v.VaccinateDate,
 			Dose:           v.Dose,
 			Route:          v.Route,
@@ -56,7 +56,7 @@ func (service *AdverseEventServiceImpl) CreateAdverseEvent(event AdverseEvent) e
 		log.Println(err.Error())
 		// 如果提交失败，则把之前的记录也一并删除
 		go func() {
-			_ = models.DeleteAdverseEventById(adverseEvent.ID)
+			_ = models.DeleteAdverseEventById(adverseEvent.Id)
 		}()
 		return errors.New("创建失败！")
 	}
@@ -99,7 +99,7 @@ func (service *AdverseEventServiceImpl) GetAdverseEvent(id int64) (event *Advers
 				return
 			}
 			vaccineList = append(vaccineList, &AdverseVaccine{
-				ID:           v.VaccineId,
+				Id:           v.VaccineId,
 				Type:         vaccine.Type,
 				Manufacturer: vaccine.ProductionCompany,
 				Name:         vaccine.ProductName,
@@ -134,7 +134,7 @@ func (service *AdverseEventServiceImpl) GetAdverseEventList(page,
 	}
 	// 组装数据
 	for _, v := range list {
-		event, err := service.GetAdverseEvent(v.ID)
+		event, err := service.GetAdverseEvent(v.Id)
 		if err != nil {
 			return nil, 0, err
 		}

@@ -3,7 +3,7 @@ package models
 import "MyWeb/dao"
 
 type VaersVax struct {
-	ID      int64  `json:"id"`
+	Id      int64  `json:"id"`
 	VaersId int64  `json:"vaersId"`
 	Dose    string `json:"dose"`
 	Route   string `json:"route"`

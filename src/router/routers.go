@@ -72,9 +72,9 @@ func SetupRouters() *gin.Engine {
 		// VaccineCFDA数据，来自CFDA官网
 		apiGroup.POST("/vaccine/cfda", controller.CreateAVaccineCFDA)
 		apiGroup.GET("/vaccine/cfda", controller.GetVaccineCFDAList)
-		apiGroup.DELETE("/vaccine/cfda", controller.DeleteVaccineCFDAByID)
+		apiGroup.DELETE("/vaccine/cfda", controller.DeleteVaccineCFDAById)
 		apiGroup.GET("/vaccine/cfda/example", controller.GetVaccineListExample)
-		apiGroup.GET("/vaccine/cfda/example/:tid", controller.GetVaccineListExampleByTID)
+		apiGroup.GET("/vaccine/cfda/example/:tid", controller.GetVaccineListExampleByTId)
 		// 不良反应
 		apiGroup.POST("/adverse", jwt.Auth, controller.CreateAdverseEvent)
 		apiGroup.GET("/adverse", controller.GetAdverseEvent)
@@ -95,10 +95,10 @@ func SetupRouters() *gin.Engine {
 		// 问卷
 		apiGroup.GET("/questionnaire", controller.GetQuestionnaireList)
 		apiGroup.POST("/questionnaire", jwt.Auth, controller.CreateQuestionnaire)
-		apiGroup.DELETE("/questionnaire/:id", jwt.Auth, controller.DeleteQuestionnaireByID)
+		apiGroup.DELETE("/questionnaire/:id", jwt.Auth, controller.DeleteQuestionnaireById)
 		apiGroup.GET("/questionnaire/user/:uid", controller.GetQuestionnaireByUid)
 		// 问题
-		apiGroup.GET("/questionnaire/:id/questions", controller.GetQuestionListByQID)
+		apiGroup.GET("/questionnaire/:id/questions", controller.GetQuestionListByQId)
 		apiGroup.GET("/questionnaire/questions/type", controller.GetQuestionTypeList)
 		apiGroup.POST("/questionnaire/:id/questions", jwt.Auth, controller.CreateQuestion)
 		apiGroup.DELETE("/questionnaire/:id/questions/:qid", jwt.Auth, controller.DeleteQuestion)

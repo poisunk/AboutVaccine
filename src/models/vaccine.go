@@ -6,7 +6,7 @@ import (
 )
 
 type Vaccine struct {
-	ID                int64  `gorm:"int(10);column:id;primary_key" json:"id"`
+	Id                int64  `gorm:"int(10);column:id;primary_key" json:"id"`
 	Tid               int64  `gson:"int(11);column:tid" json:"tid"`
 	RegisterNumber    string `gorm:"varchar(255);column:批准文号" json:"registerNumber"`
 	ProductName       string `gorm:"varchar(255);column:产品名称" json:"productName"`

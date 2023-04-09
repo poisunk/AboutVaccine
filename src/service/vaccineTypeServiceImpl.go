@@ -29,7 +29,7 @@ func (service *VaccineTypeServiceImpl) GetVaccineTypeList(page int, pageSize int
 }
 
 func (service *VaccineTypeServiceImpl) GetVaccineTypeById(id int64) (name string, err error) {
-	if name, err = models.GetVaccineTypeNameByID(id); err != nil {
+	if name, err = models.GetVaccineTypeNameById(id); err != nil {
 		log.Println(err.Error())
 		return "", errors.New("查询失败！")
 	}

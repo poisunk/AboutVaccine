@@ -6,7 +6,7 @@ import (
 )
 
 type Questionnaire struct {
-	ID          int64     `gorm:"int(11);column:id;primary_key" json:"id"`
+	Id          int64     `gorm:"int(11);column:id;primary_key" json:"id"`
 	Name        string    `gorm:"varchar(255);column:name" json:"name"`
 	Description string    `gorm:"text;column:description" json:"description"`
 	OwnerId     int64     `gorm:"int(11);column:owner_id" json:"ownerId"`
@@ -39,7 +39,7 @@ func GetQuestionnaireById(id int64) (q *Questionnaire, err error) {
 	return
 }
 
-func GetQuestionnaireOwnerIdByID(id int64) (uid int64, err error) {
+func GetQuestionnaireOwnerIdById(id int64) (uid int64, err error) {
 	var q Questionnaire
 	if err = dao.DB.Model(Questionnaire{}).Select("owner_id").Where("id = ?", id).First(&q).Error; err != nil {
 		return 0, err
@@ -61,7 +61,7 @@ func CreateAQuestionnaire(q *Questionnaire) (err error) {
 	return nil
 }
 
-func DeleteQuestionnaireByID(id int64) (err error) {
+func DeleteQuestionnaireById(id int64) (err error) {
 	if err = dao.DB.Delete(Questionnaire{}, "id = ?", id).Error; err != nil {
 
 	}

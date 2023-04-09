@@ -7,7 +7,7 @@ import (
 )
 
 type Question struct {
-	ID              int64  `gorm:"int(10);column:id;primary_key" json:"id"`
+	Id              int64  `gorm:"int(10);column:id;primary_key" json:"id"`
 	QuestionnaireId int64  `gorm:"int(11);column:questionnaire_id" json:"questionnaireId"`
 	Type            string `gorm:"varchar(255);column:type" json:"type"`
 	Content         string `gorm:"varchar(255);column:content" json:"content"`
@@ -16,7 +16,7 @@ type Question struct {
 	Order           int64  `gorm:"int(11);column:order" json:"order"`
 }
 
-func GetQuestionListByQID(id int64) (q []*Question, err error) {
+func GetQuestionListByQId(id int64) (q []*Question, err error) {
 	s := gorm.Expr("IFNULL(order, ?) ASC, content ASC", math.MaxInt32)
 	if err = dao.DB.Find(&q, "`questionnaire_id` = ?", id).Order(s).Error; err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func CreateQuestionList(q []*Question) (err error) {
 	return
 }
 
-func DeleteQuestionByID(id int64) (err error) {
+func DeleteQuestionById(id int64) (err error) {
 	if err = dao.DB.Delete(Question{}, "id = ?", id).Error; err != nil {
 		return err
 	}

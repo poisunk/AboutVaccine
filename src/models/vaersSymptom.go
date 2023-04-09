@@ -3,7 +3,7 @@ package models
 import "MyWeb/dao"
 
 type VaersSymptom struct {
-	ID        int64  `json:"id"`
+	Id        int64  `json:"id"`
 	VaersId   int64  `json:"vaersId"`
 	Symptom   string `json:"symptom"`
 	SymptomId int64  `json:"symptomId"`

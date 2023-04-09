@@ -6,7 +6,7 @@ import (
 )
 
 type AdverseEvent struct {
-	ID                  int64      `json:"id"`
+	Id                  int64      `json:"id"`
 	Uid                 int64      `json:"uid"`
 	Code                string     `json:"code"`
 	Name                string     `json:"name"`

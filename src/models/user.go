@@ -3,7 +3,7 @@ package models
 import "MyWeb/dao"
 
 type User struct {
-	UID      int    `gorm:"int(8);column:uid;primary_key" json:"uid"`
+	UId      int    `gorm:"int(8);column:uid;primary_key" json:"uid"`
 	Nickname string `gorm:"varchar(255);column:nickname" json:"nickname"`
 	Password string `gorm:"char(64);column:password" json:"password"`
 }
@@ -39,7 +39,7 @@ func CreateUser(user *User) (err error) {
 	return nil
 }
 
-func DeleteUserByID(id int64) (err error) {
+func DeleteUserById(id int64) (err error) {
 	if err = dao.DB.Delete(User{}, "uid = ?", id).Error; err != nil {
 		return err
 	}

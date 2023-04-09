@@ -5,7 +5,7 @@ import (
 )
 
 type OAETerm struct {
-	ID              int    `gorm:"int(11);column:id;primary_key" json:"id"`
+	Id              int    `gorm:"int(11);column:id;primary_key" json:"id"`
 	TermIRI         string `gorm:"varchar(255);column:TermIRI" json:"termIRI"`
 	TermLabel       string `gorm:"varchar(255);column:TermLabel" json:"termLabel"`
 	ParentTermIRI   string `gorm:"varchar(255);column:ParentTermIRI" json:"parentTermIRI"`
