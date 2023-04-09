@@ -3,9 +3,11 @@ package router
 import (
 	"MyWeb/controller"
 	"MyWeb/middleware/jwt"
+	"MyWeb/service"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 func SetupRouters() *gin.Engine {
@@ -24,6 +26,43 @@ func SetupRouters() *gin.Engine {
 	r.LoadHTMLGlob("templates/*")
 	r.Static("/static", "./static")
 	r.GET("/", controller.IndexHandler)
+	r.GET("/vaers", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "search.html", gin.H{})
+	})
+	r.GET("/vaers/result", func(c *gin.Context) {
+		vaccineId, _ := c.GetQuery("vaccineId")
+		symptomId, _ := c.GetQuery("symptomId")
+
+		// 准备服务
+		if vaccineId == "" && symptomId == "" {
+			c.HTML(http.StatusBadRequest, "vaers.html", gin.H{})
+			return
+		}
+
+		vaersService := service.InitVaersService()
+		if len(vaccineId) == 0 {
+			id, _ := strconv.ParseInt(symptomId, 10, 64)
+			vaers, _, _ := vaersService.GetVaersResultsBySymptomId(id, 1, 20)
+			c.HTML(http.StatusOK, "vaers.html", gin.H{
+				"vaers": vaers,
+			})
+			return
+		} else if len(symptomId) == 0 {
+			id, _ := strconv.ParseInt(vaccineId, 10, 64)
+			vaers, _, _ := vaersService.GetVaersResultsByVaccineId(id, 1, 20)
+			c.HTML(http.StatusOK, "vaers.html", gin.H{
+				"vaers": vaers,
+			})
+			return
+		} else {
+			id, _ := strconv.ParseInt(vaccineId, 10, 64)
+			id2, _ := strconv.ParseInt(symptomId, 10, 64)
+			vaers, _ := vaersService.GetVaersResults(id, id2)
+			c.HTML(http.StatusOK, "vaers.html", gin.H{
+				"vaers": []*service.VaersResult{vaers},
+			})
+		}
+	})
 
 	// 下载vaccine安卓安装包
 	r.GET("/download/vaccine", controller.DownloadVaccineApk)

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>搜索页面</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/css/search.css">
+    <script>
+        var symptomSelect
+        var vaccineSelect
+        window.onload = function () {
+            // 查询vaccine term
+            var vaccineBox = document.getElementById("vaccine-box");
+            $("#vaccine-search").click(function () {
+                var content = $("#vaccine-input").val();
+                initVaccine(content)
+            })
+            // 查询symptom term
+            var symptomBox = document.getElementById("symptom-box");
+            $("#symptom-search").click(function () {
+                var content = $("#symptom-input").val();
+                initSymptom(content)
+            })
+
+            // 初始化vaccine列表
+            function initVaccine(content) {
+                searchVaccine(function (data) {
+                    var vaccines = data.data.vaccines
+                    // 清空之前的元素
+                    vaccineBox.innerHTML = ""
+                    for (var i = 0; i < vaccines.length; i++) {
+                        $("#vaccine-box").append(
+                            `<li class="result_vaccine" id="${vaccines[i].id}">${vaccines[i].name}</li>`
+                        )
+                    }
+                    refreshVaccine()
+                }, content)
+            }
+
+            // 初始化symptom列表
+            function initSymptom(content) {
+                searchSymptom(function (data) {
+                    var symptoms = data.data.symptoms
+                    // 清空之前的元素
+                    symptomBox.innerHTML = ""
+                    for (var i = 0; i < symptoms.length; i++) {
+                        $("#symptom-box").append(
+                            `<li class="result_symptom" id="${symptoms[i].id}">${symptoms[i].symptom}</li>`
+                        )
+                    }
+                    refreshSymptom()
+                }, content)
+            }
+
+            initVaccine("")
+            initSymptom("")
+
+            // 设置检索button点击事件
+            $("#search-vaers").click(function () {
+                var vs = `vaccineId=${vaccineSelect}`
+                var ss = `symptomId=${symptomSelect}`
+                if (vaccineSelect !== undefined && symptomSelect !== undefined) {
+                    window.open("http://localhost:8080/vaers/result?" + vs + "&" + ss)
+                }else if (vaccineSelect !== undefined) {
+                    window.open("http://localhost:8080/vaers/result?" + vs)
+                }else if (symptomSelect !== undefined) {
+                    window.open("http://localhost:8080/vaers/result?" + ss)
+                }
+            })
+        }
+        function searchVaccine(onSuccess, keyword) {
+            // 发起请求
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/api/vaers/vaccine",
+                dataType: "json",
+                data: {
+                    keyword: keyword,
+                },
+                success: function (data) {
+                    console.log(data)
+                    onSuccess(data)
+                },
+                error: function () {
+                    alert("请求失败");
+                },
+            })
+        }
+        function searchSymptom(onSuccess, keyword) {
+            // 发起请求
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/api/vaers/symptom",
+                dataType: "json",
+                data: {
+                    keyword: keyword,
+                },
+                success: function (data) {
+                    onSuccess(data)
+                },
+                error: function () {
+                    alert("请求失败");
+                }
+            })
+        }
+
+        function refreshVaccine() {
+            $(".result_vaccine").click(function () {
+                console.log(vaccineSelect)
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active")
+                    vaccineSelect = undefined
+                }else{
+                    $(this).addClass("active").siblings().removeClass("active")
+                    vaccineSelect = $(this).attr("id")
+                }
+            })
+        }
+        function refreshSymptom() {
+            $(".result_symptom").click(function () {
+                console.log(symptomSelect)
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active")
+                    symptomSelect = undefined
+                }else {
+                    $(this).addClass("active").siblings().removeClass("active")
+                    symptomSelect = $(this).attr("id")
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="page">
+        <div class="search" id="vaccine">
+            <div class="search-box">
+                <input class="search-input" id="vaccine-input" type="text" placeholder="请输入疫苗姓名">
+                <button class="search-button" id="vaccine-search">搜索</button>
+            </div>
+            <div class="result-box">
+                <ul id="vaccine-box">
+                </ul>
+            </div>
+        </div>
+        <div class="search" id="symptom">
+            <div class="search-box">
+                <input class="search-input" type="text" id="symptom-input" placeholder="请输入症状">
+                <button class="search-button" id="symptom-search">搜索</button>
+            </div>
+            <div class="result-box">
+                <ul id="symptom-box">
+                </ul>
+            </div>
+        </div>
+
+        <button id="search-vaers">检索</button>
+    </div>
+</body>
+
+</html>
