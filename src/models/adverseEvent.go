@@ -42,7 +42,7 @@ func GetAdverseEventById(id int64) (event *AdverseEvent, err error) {
 	return event, nil
 }
 
-func GetAdverseEventList(page int64, pageSize int64) (list []*AdverseEvent, err error) {
+func GetAdverseEventList(page, pageSize int) (list []*AdverseEvent, err error) {
 	if err = dao.DB.Offset((page - 1) * pageSize).Limit(pageSize).Find(&list).Error; err != nil {
 		return nil, err
 	}

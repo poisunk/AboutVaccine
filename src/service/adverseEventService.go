@@ -6,7 +6,7 @@ type AdverseEventService interface {
 	CreateAdverseEvent(AdverseEvent) error
 	GetAdverseEvent(int64) (*AdverseEvent, error)
 	DeleteAdverseEvent(int64) error
-	GetAdverseEventList(int64, int64) ([]*AdverseEvent, int64, error)
+	GetAdverseEventList(page, pageSize int) ([]*AdverseEvent, int64, error)
 }
 
 type AdverseEvent struct {
@@ -26,6 +26,7 @@ type AdverseEvent struct {
 	RapporteurPhone     string            `json:"rapporteurPhone"`
 	RapporteurAddress   string            `json:"rapporteurAddress"`
 	VaccineList         []*AdverseVaccine `json:"vaccineList"`
+	SymptomList         []*AdverseSymptom `json:"symptomList"`
 }
 
 type AdverseVaccine struct {
@@ -37,4 +38,11 @@ type AdverseVaccine struct {
 	Dose          string     `json:"dose"`
 	Route         string     `json:"route"`
 	Site          string     `json:"site"`
+}
+
+type AdverseSymptom struct {
+	Id      int64  `json:"id"`
+	EventId int64  `json:"eventId"`
+	Symptom string `json:"symptom"`
+	OaeId   int64  `json:"oaeId"`
 }

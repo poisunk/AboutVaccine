@@ -60,6 +60,27 @@ func (service *AdverseEventServiceImpl) CreateAdverseEvent(event AdverseEvent) e
 		}()
 		return errors.New("创建失败！")
 	}
+
+	// 准备数据，AdverseSymptom
+	var adverseSymptomList []*models.AdverseSymptom
+	for _, v := range event.SymptomList {
+		as := &models.AdverseSymptom{
+			EventId: adverseEvent.Id,
+			Symptom: v.Symptom,
+			OaeId:   v.OaeId,
+		}
+		adverseSymptomList = append(adverseSymptomList, as)
+	}
+	// 提交数据
+	err = models.CreateAdverseSymptomList(adverseSymptomList)
+	if err != nil {
+		log.Println(err.Error())
+		// 如果提交失败，则把之前的记录也一并删除
+		go func() {
+			_ = models.DeleteAdverseEventById(adverseEvent.Id)
+		}()
+		return errors.New("创建失败！")
+	}
 	return nil
 }
 
@@ -73,6 +94,13 @@ func (service *AdverseEventServiceImpl) GetAdverseEvent(id int64) (event *Advers
 
 	// 检索AdverseVaccine
 	adverseVaccineList, err := models.GetAdverseVaccineListByVid(id)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, errors.New("检索失败！")
+	}
+
+	// 检索AdverseSymptom
+	adverseSymptomList, err := models.GetAdverseSymptomByEventId(id)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("检索失败！")
@@ -111,6 +139,19 @@ func (service *AdverseEventServiceImpl) GetAdverseEvent(id int64) (event *Advers
 	}
 	wg.Wait()
 	event.VaccineList = vaccineList
+
+	// 组装AdverseSymptom部分
+	var symptomList []*AdverseSymptom
+	for _, v := range adverseSymptomList {
+		symptom := &AdverseSymptom{
+			Id:      v.Id,
+			EventId: v.EventId,
+			Symptom: v.Symptom,
+			OaeId:   v.OaeId,
+		}
+		symptomList = append(symptomList, symptom)
+	}
+	event.SymptomList = symptomList
 	return event, nil
 }
 
@@ -124,8 +165,8 @@ func (service *AdverseEventServiceImpl) DeleteAdverseEvent(id int64) error {
 	return nil
 }
 
-func (service *AdverseEventServiceImpl) GetAdverseEventList(page,
-	pageSize int64) (adverseEventList []*AdverseEvent, total int64, err error) {
+func (service *AdverseEventServiceImpl) GetAdverseEventList(page, pageSize int) (
+	adverseEventList []*AdverseEvent, total int64, err error) {
 	// 检索AdverseEvent
 	list, err := models.GetAdverseEventList(page, pageSize)
 	if err != nil {

@@ -61,11 +61,11 @@
                 var vs = `vaccineId=${vaccineSelect}`
                 var ss = `symptomId=${symptomSelect}`
                 if (vaccineSelect !== undefined && symptomSelect !== undefined) {
-                    window.open("http://localhost:8080/vaers/result?" + vs + "&" + ss)
+                    window.open("http://43.140.194.248:8080/vaers/result?" + vs + "&" + ss)
                 }else if (vaccineSelect !== undefined) {
-                    window.open("http://localhost:8080/vaers/result?" + vs)
+                    window.open("http://43.140.194.248:8080/vaers/result?" + vs)
                 }else if (symptomSelect !== undefined) {
-                    window.open("http://localhost:8080/vaers/result?" + ss)
+                    window.open("http://43.140.194.248:8080/vaers/result?" + ss)
                 }
             })
         }
@@ -73,7 +73,7 @@
             // 发起请求
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/api/vaers/vaccine",
+                url: "http://43.140.194.248:8080/api/vaers/vaccine",
                 dataType: "json",
                 data: {
                     keyword: keyword,
@@ -91,7 +91,7 @@
             // 发起请求
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/api/vaers/symptom",
+                url: "http://43.140.194.248:8080/api/vaers/symptom",
                 dataType: "json",
                 data: {
                     keyword: keyword,

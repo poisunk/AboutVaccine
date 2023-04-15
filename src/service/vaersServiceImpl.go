@@ -62,10 +62,24 @@ func (vs *VaersServiceImpl) GetVaersResults(vaccineId, symptomId int64) (result 
 		log.Println(err.Error())
 		return nil, errors.New("查询VaersResult失败")
 	}
+	total_ac, _ := models.SumVaersResultTotalEqVaccineId(vaccineId)
+	total_b, _ := models.SumVaersResultTotalEqSymptomIdAndNotEqVaccineId(symptomId, vaccineId)
+	total_bd, _ := models.SumVaersResultTotalNotEqVaccineId(vaccineId)
+	var prr float64
+	var chi float64
+	if total_ac == 0 || total_b == 0 || total_bd == 0 {
+		prr = 0
+		chi = 0
+	} else {
+		prr = (float64(r.Total) / float64(total_ac)) / (float64(total_b) / float64(total_bd))
+		chi = calculateChiSquare(float64(r.Total), float64(total_ac), float64(total_b), float64(total_bd))
+	}
 	result = &VaersResult{
 		Symptom: r.Symptom,
 		Vaccine: r.Name,
 		Total:   r.Total,
+		Prr:     prr,
+		Chi:     chi,
 	}
 	return result, nil
 }
@@ -83,10 +97,24 @@ func (vs *VaersServiceImpl) GetVaersResultsByVaccineId(vid int64, page int, page
 	}
 	list = make([]*VaersResult, len(rLisr))
 	for i, r := range rLisr {
+		total_ac, _ := models.SumVaersResultTotalEqVaccineId(vid)
+		total_b, _ := models.SumVaersResultTotalEqSymptomIdAndNotEqVaccineId(r.SymptomId, vid)
+		total_bd, _ := models.SumVaersResultTotalNotEqVaccineId(vid)
+		var prr float64
+		var chi float64
+		if total_ac == 0 || total_b == 0 || total_bd == 0 {
+			prr = 0
+			chi = 0
+		} else {
+			prr = (float64(r.Total) / float64(total_ac)) / (float64(total_b) / float64(total_bd))
+			chi = calculateChiSquare(float64(r.Total), float64(total_ac), float64(total_b), float64(total_bd))
+		}
 		list[i] = &VaersResult{
 			Symptom: r.Symptom,
 			Vaccine: r.Name,
 			Total:   r.Total,
+			Prr:     prr,
+			Chi:     chi,
 		}
 	}
 	total, err = models.CountVaersResultByVaccineId(vid)
@@ -106,12 +134,34 @@ func (vs *VaersServiceImpl) GetVaersResultsBySymptomId(sid int64, page int, page
 	}
 	list = make([]*VaersResult, len(rLisr))
 	for i, r := range rLisr {
+		total_ac, _ := models.SumVaersResultTotalEqVaccineId(r.VaccineId)
+		total_b, _ := models.SumVaersResultTotalEqSymptomIdAndNotEqVaccineId(sid, r.VaccineId)
+		total_bd, _ := models.SumVaersResultTotalNotEqVaccineId(r.VaccineId)
+		var prr float64
+		var chi float64
+		if total_ac == 0 || total_b == 0 || total_bd == 0 {
+			prr = 0
+			chi = 0
+		} else {
+			prr = (float64(r.Total) / float64(total_ac)) / (float64(total_b) / float64(total_bd))
+			chi = calculateChiSquare(float64(r.Total), float64(total_ac), float64(total_b), float64(total_bd))
+		}
 		list[i] = &VaersResult{
 			Symptom: r.Symptom,
 			Vaccine: r.Name,
 			Total:   r.Total,
+			Prr:     prr,
+			Chi:     chi,
 		}
 	}
 	total, err = models.CountVaersResultBySymptomId(sid)
 	return list, total, nil
+}
+
+func calculateChiSquare(a, total_ac, b, total_bd float64) float64 {
+	total_abcd := total_ac + total_bd
+	d := total_bd - b
+	c := total_ac - a
+	result := total_abcd * (a*d - b*c) * (a*d - b*c) / (total_bd * total_ac) * (a + b) * (d + c)
+	return result
 }

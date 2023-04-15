@@ -54,8 +54,8 @@ func GetAdverseEvent(c *gin.Context) {
 	var aService = service.InitAdverseEventService()
 	if len(s) == 0 {
 		// 获取page, pageSize
-		page, _ := strconv.ParseInt(c.DefaultQuery("page", "1"), 10, 64)
-		pageSize, _ := strconv.ParseInt(c.DefaultQuery("pageSize", "20"), 10, 64)
+		page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+		pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 		// 获取所有
 		adverseEventList, total, err := aService.GetAdverseEventList(page, pageSize)
 		if err != nil {
@@ -65,7 +65,7 @@ func GetAdverseEvent(c *gin.Context) {
 			})
 			return
 		}
-		more := pageSize*(page-1)+int64(len(adverseEventList)) < total
+		more := pageSize*(page-1)+len(adverseEventList) < int(total)
 		c.JSON(http.StatusOK, Response{
 			Code:    config.SuccessStatus,
 			Message: "查询成功！",
