@@ -162,6 +162,6 @@ func calculateChiSquare(a, total_ac, b, total_bd float64) float64 {
 	total_abcd := total_ac + total_bd
 	d := total_bd - b
 	c := total_ac - a
-	result := total_abcd * (a*d - b*c) * (a*d - b*c) / (total_bd * total_ac) * (a + b) * (d + c)
+	result := (total_abcd * (a*d - b*c) * (a*d - b*c)) / ((total_bd * total_ac) * (a + b) * (d + c))
 	return result
 }
