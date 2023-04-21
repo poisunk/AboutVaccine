@@ -1,6 +1,6 @@
 package models
 
-import "about-vaccine/dao"
+import "about-vaccine/src/dao"
 
 type User struct {
 	UId      int    `gorm:"int(8);column:uid;primary_key" json:"uid"`

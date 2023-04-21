@@ -1,9 +1,9 @@
 package service
 
 import (
-	"about-vaccine/middleware/jwt"
-	"about-vaccine/models"
-	"about-vaccine/utile"
+	"about-vaccine/src/middleware/jwt"
+	"about-vaccine/src/models"
+	"about-vaccine/src/utile"
 	"errors"
 	"log"
 	"strconv"

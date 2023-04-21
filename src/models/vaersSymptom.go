@@ -1,6 +1,6 @@
 package models
 
-import "about-vaccine/dao"
+import "about-vaccine/src/dao"
 
 type VaersSymptom struct {
 	Id        int64  `json:"id"`

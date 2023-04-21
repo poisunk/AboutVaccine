@@ -3,7 +3,6 @@ package dao
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"xorm.io/xorm"
 )
 
 const (
@@ -11,8 +10,7 @@ const (
 )
 
 var (
-	DB     *gorm.DB
-	Engine *xorm.Engine
+	DB *gorm.DB
 )
 
 func InitMysql() {
@@ -23,14 +21,6 @@ func InitMysql() {
 	}
 	DB.SingularTable(true)
 	if err = DB.DB().Ping(); err != nil {
-		panic(err)
-	}
-}
-
-func InitXorm() {
-	var err error
-	Engine, err = xorm.NewEngine("mysql", dsn)
-	if err != nil {
 		panic(err)
 	}
 }

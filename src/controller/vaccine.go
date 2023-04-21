@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"about-vaccine/config"
-	"about-vaccine/service"
+	"about-vaccine/src/config"
+	"about-vaccine/src/service"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"

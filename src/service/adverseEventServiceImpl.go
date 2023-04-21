@@ -1,8 +1,8 @@
 package service
 
 import (
-	"about-vaccine/models"
-	"about-vaccine/utile"
+	"about-vaccine/src/models"
+	"about-vaccine/src/utile"
 	"errors"
 	"log"
 	"sync"

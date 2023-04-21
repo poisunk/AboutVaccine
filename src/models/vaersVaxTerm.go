@@ -1,8 +1,8 @@
 package models
 
 import (
-	"about-vaccine/dao"
-	"about-vaccine/utile"
+	"about-vaccine/src/dao"
+	"about-vaccine/src/utile"
 )
 
 type VaersVaxTerm struct {

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"about-vaccine/dao"
+	"about-vaccine/src/dao"
 	"time"
 )
 

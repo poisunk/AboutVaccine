@@ -1,9 +1,9 @@
 package router
 
 import (
-	"about-vaccine/controller"
-	"about-vaccine/middleware/jwt"
-	"about-vaccine/service"
+	"about-vaccine/src/controller"
+	"about-vaccine/src/middleware/jwt"
+	"about-vaccine/src/service"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"

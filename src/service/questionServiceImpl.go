@@ -1,7 +1,7 @@
 package service
 
 import (
-	"about-vaccine/models"
+	"about-vaccine/src/models"
 	"errors"
 	"log"
 	"strings"

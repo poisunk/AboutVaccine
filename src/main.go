@@ -1,8 +1,8 @@
 package main
 
 import (
-	"about-vaccine/dao"
-	"about-vaccine/router"
+	"about-vaccine/src/dao"
+	"about-vaccine/src/router"
 )
 
 func main() {
@@ -15,6 +15,5 @@ func main() {
 	err := r.Run(":8080")
 	if err != nil {
 		println(err)
-		return
 	}
 }

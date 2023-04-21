@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"about-vaccine/config"
+	"about-vaccine/src/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

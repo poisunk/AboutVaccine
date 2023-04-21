@@ -1,10 +1,11 @@
 package models
 
 import (
-	"about-vaccine/dao"
-	"about-vaccine/utile"
+	"about-vaccine/src/dao"
+	"about-vaccine/src/utile"
 )
 
+// Vaccine TODO 重构
 type Vaccine struct {
 	Id                int64  `gorm:"int(10);column:id;primary_key" json:"id"`
 	Tid               int64  `gson:"int(11);column:tid" json:"tid"`
