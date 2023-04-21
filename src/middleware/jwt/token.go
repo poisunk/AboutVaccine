@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"MyWeb/config"
+	"about-vaccine/config"
 	"github.com/dgrijalva/jwt-go"
 	"strconv"
 	"time"

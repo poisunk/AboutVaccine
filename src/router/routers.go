@@ -1,9 +1,9 @@
 package router
 
 import (
-	"MyWeb/controller"
-	"MyWeb/middleware/jwt"
-	"MyWeb/service"
+	"about-vaccine/controller"
+	"about-vaccine/middleware/jwt"
+	"about-vaccine/service"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"net/http"

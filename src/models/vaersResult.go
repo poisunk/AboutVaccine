@@ -1,6 +1,6 @@
 package models
 
-import "MyWeb/dao"
+import "about-vaccine/dao"
 
 type VaersResult struct {
 	Id        int64  `json:"id"`

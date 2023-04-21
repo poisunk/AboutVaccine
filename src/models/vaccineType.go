@@ -1,6 +1,6 @@
 package models
 
-import "MyWeb/dao"
+import "about-vaccine/dao"
 
 type VaccineType struct {
 	Id   int64  `gorm:"int(11);column:id;primary_key" json:"id"`

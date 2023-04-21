@@ -1,7 +1,7 @@
 package models
 
 import (
-	"MyWeb/dao"
+	"about-vaccine/dao"
 )
 
 type OAETerm struct {

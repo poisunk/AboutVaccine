@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"MyWeb/config"
-	"MyWeb/models"
-	"MyWeb/service"
+	"about-vaccine/config"
+	"about-vaccine/models"
+	"about-vaccine/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

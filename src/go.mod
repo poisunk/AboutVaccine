@@ -1,4 +1,4 @@
-module MyWeb
+module about-vaccine
 
 go 1.18
 

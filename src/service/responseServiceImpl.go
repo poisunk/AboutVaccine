@@ -1,7 +1,7 @@
 package service
 
 import (
-	"MyWeb/models"
+	"about-vaccine/models"
 	"errors"
 	"log"
 	"time"

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"MyWeb/dao"
-	"MyWeb/router"
+	"about-vaccine/dao"
+	"about-vaccine/router"
 )
 
 func main() {

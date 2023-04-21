@@ -1,8 +1,8 @@
 package service
 
 import (
-	"MyWeb/models"
-	"MyWeb/utile"
+	"about-vaccine/models"
+	"about-vaccine/utile"
 	"errors"
 	"log"
 )

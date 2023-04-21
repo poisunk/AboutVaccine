@@ -1,8 +1,8 @@
 package models
 
 import (
-	"MyWeb/dao"
-	"MyWeb/utile"
+	"about-vaccine/dao"
+	"about-vaccine/utile"
 )
 
 type Vaccine struct {

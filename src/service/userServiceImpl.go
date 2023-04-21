@@ -1,9 +1,9 @@
 package service
 
 import (
-	"MyWeb/middleware/jwt"
-	"MyWeb/models"
-	"MyWeb/utile"
+	"about-vaccine/middleware/jwt"
+	"about-vaccine/models"
+	"about-vaccine/utile"
 	"errors"
 	"log"
 	"strconv"
