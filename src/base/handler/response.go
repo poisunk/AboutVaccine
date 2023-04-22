@@ -21,7 +21,7 @@ type PagedData struct {
 
 func HandleResponse(c *gin.Context, err error, data interface{}) {
 	if err != nil {
-		c.JSON(http.StatusOK, RespBody{
+		c.JSON(http.StatusBadGateway, RespBody{
 			Code:    config.FailureStatus,
 			Message: err.Error(),
 		})

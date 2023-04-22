@@ -3,6 +3,7 @@ package repo
 import (
 	"about-vaccine/src/base/dao"
 	"about-vaccine/src/entity"
+	"about-vaccine/src/utile"
 )
 
 type VaccineRepo struct {
@@ -26,7 +27,7 @@ func (repo *VaccineRepo) GetByID(id int64) (*entity.Vaccine, bool, error) {
 
 func (repo *VaccineRepo) GetListByProductName(name string, page, pageSize int) ([]*entity.Vaccine, int64, error) {
 	var vaccines []*entity.Vaccine
-	total, err := repo.DB.Where("product_name = ?", name).
+	total, err := repo.DB.Where("产品名称 LIKE ?", utile.HandleSearchWord(name)).
 		Limit(pageSize, (page-1)*pageSize).FindAndCount(&vaccines)
 	if err != nil {
 		return nil, 0, err
@@ -42,4 +43,9 @@ func (repo *VaccineRepo) GetListByType(tid int64, page, pageSize int) ([]*entity
 		return nil, 0, err
 	}
 	return vaccines, total, nil
+}
+
+func (repo *VaccineRepo) Update(vaccine *entity.Vaccine) error {
+	_, err := repo.DB.ID(vaccine.Id).Update(vaccine)
+	return err
 }

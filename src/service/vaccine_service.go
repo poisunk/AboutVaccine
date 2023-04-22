@@ -1,6 +1,7 @@
 package service
 
 import (
+	"about-vaccine/src/entity"
 	"about-vaccine/src/repo"
 	"about-vaccine/src/schama"
 	"errors"
@@ -28,14 +29,14 @@ func (s *VaccineService) Get(id int64) (*schama.Vaccine, error) {
 		log.Println(err.Error())
 		return nil, errors.New("获取Vaccine失败")
 	}
+	if len(v.Type) == 0 {
+		err := s.setupVaccineType(v)
+		if err != nil {
+			return nil, err
+		}
+	}
 	vaccine := &schama.Vaccine{}
 	vaccine.GetFormEntity(v)
-	t, _, err := s.TypeRepo.GetById(v.Tid)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, errors.New("获取VaccineType失败")
-	}
-	vaccine.Type = t.Type
 	return vaccine, nil
 }
 
@@ -47,6 +48,12 @@ func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*scham
 	}
 	var list []*schama.Vaccine
 	for _, v := range vs {
+		if len(v.Type) == 0 {
+			err := s.setupVaccineType(v)
+			if err != nil {
+				return nil, 0, err
+			}
+		}
 		vaccine := &schama.Vaccine{}
 		vaccine.GetFormEntity(v)
 		list = append(list, vaccine)
@@ -67,6 +74,12 @@ func (s *VaccineService) GetByType(typeStr string, page, pageSize int) ([]*scham
 	}
 	var list []*schama.Vaccine
 	for _, v := range vaccineList {
+		if len(v.Type) == 0 {
+			err := s.setupVaccineType(v)
+			if err != nil {
+				return nil, 0, err
+			}
+		}
 		vaccine := &schama.Vaccine{}
 		vaccine.GetFormEntity(v)
 		list = append(list, vaccine)
@@ -80,11 +93,24 @@ func (s *VaccineService) GetTypeList(page, pageSize int) ([]*schama.VaccineType,
 		log.Println(err.Error())
 		return nil, 0, errors.New("获取VaccineType失败")
 	}
-	list := make([]*schama.VaccineType, len(t))
+	var list []*schama.VaccineType
 	for _, v := range t {
 		tp := &schama.VaccineType{}
 		tp.GetFormEntity(v)
 		list = append(list, tp)
 	}
 	return list, total, nil
+}
+
+func (s *VaccineService) setupVaccineType(v *entity.Vaccine) error {
+	t, _, err := s.TypeRepo.GetById(v.Tid)
+	if err != nil {
+		log.Println(err.Error())
+		return errors.New("获取VaccineType失败")
+	}
+	v.Type = t.Type
+	go func() {
+		_ = s.VaccineRepo.Update(v)
+	}()
+	return nil
 }

@@ -33,7 +33,7 @@ func (repo *VaccineTypeRepo) GetList(page, pageSize int) ([]*entity.VaccineType,
 
 func (repo *VaccineTypeRepo) GetIdByType(typeStr string) (int64, bool, error) {
 	var id int64
-	has, err := repo.DB.Where("type = ?", typeStr).Cols("id").Get(&id)
+	has, err := repo.DB.Table(&entity.VaccineType{}).Where("type = ?", typeStr).Cols("id").Get(&id)
 	if err != nil {
 		return -1, false, err
 	}
