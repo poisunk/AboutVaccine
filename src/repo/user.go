@@ -24,13 +24,23 @@ func (repo *UserRepo) GetByID(id int64) (*entity.User, bool, error) {
 	return user, exist, nil
 }
 
-func (repo *UserRepo) GetListByName(name string, page, pageSize int) ([]*entity.User, error) {
-	var users []*entity.User
-	err := repo.DB.Where("nickname = ?", name).Limit(pageSize, (page-1)*pageSize).Find(&users)
+func (repo *UserRepo) GetByName(name string) (*entity.User, bool, error) {
+	user := &entity.User{}
+	exist, err := repo.DB.Where("nickname = ?", name).Get(user)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
-	return users, nil
+	return user, exist, nil
+}
+
+func (repo *UserRepo) GetBySimilarName(name string, page, pageSize int) ([]*entity.User, int64, error) {
+	var users []*entity.User
+	total, err := repo.DB.Where("nickname LIKE ?", "%"+name+"%").
+		Limit(pageSize, (page-1)*pageSize).FindAndCount(&users)
+	if err != nil {
+		return nil, 0, err
+	}
+	return users, total, nil
 }
 
 func (repo *UserRepo) Create(user ...*entity.User) error {

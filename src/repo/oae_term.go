@@ -22,14 +22,14 @@ func (repo *OAETermRepo) GetByIRI(IRI string) (*entity.OAETerm, bool, error) {
 	return oaeTerm, exist, nil
 }
 
-func (repo *OAETermRepo) GetByLabel(label string, page, pageSize int) ([]*entity.OAETerm, error) {
+func (repo *OAETermRepo) GetByLabel(label string, page, pageSize int) ([]*entity.OAETerm, int64, error) {
 	oaeList := make([]*entity.OAETerm, 0)
-	err := repo.DB.Where("TermLabel LIKE ?", "%"+label+"%").
-		Limit(pageSize, (page-1)*pageSize).Find(&oaeList)
+	total, err := repo.DB.Where("TermLabel LIKE ?", "%"+label+"%").
+		Limit(pageSize, (page-1)*pageSize).FindAndCount(&oaeList)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return oaeList, nil
+	return oaeList, total, nil
 }
 
 func (repo *OAETermRepo) CountByLabel(label string) (int64, error) {

@@ -24,13 +24,22 @@ func (repo *AdverseEventRepo) GetById(id int64) (*entity.AdverseEvent, bool, err
 	return event, exist, nil
 }
 
-func (repo *AdverseEventRepo) GetList(page, pageSize int) ([]*entity.AdverseEvent, error) {
+func (repo *AdverseEventRepo) GetList(page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
 	var list []*entity.AdverseEvent
-	err := repo.DB.Limit(pageSize, (page-1)*pageSize).Find(&list)
+	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return list, nil
+	return list, total, nil
+}
+
+func (repo *AdverseEventRepo) GetListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
+	var list []*entity.AdverseEvent
+	total, err := repo.DB.Where("uid = ?", uid).Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	if err != nil {
+		return nil, 0, err
+	}
+	return list, total, nil
 }
 
 func (repo *AdverseEventRepo) Count() (int64, error) {

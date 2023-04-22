@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"time"
 )
 
 // HandleSearchWord 处理搜索关键字
@@ -22,13 +21,6 @@ func EnCoder(password string) string {
 	h := hmac.New(sha256.New, []byte(password))
 	sha := hex.EncodeToString(h.Sum(nil))
 	return sha
-}
-
-func GetTimeOrNow(t time.Time) time.Time {
-	if t.IsZero() {
-		return time.Now()
-	}
-	return t
 }
 
 func StructConv(origin any, target any) error {

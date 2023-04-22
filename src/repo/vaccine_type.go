@@ -22,12 +22,22 @@ func (repo *VaccineTypeRepo) GetById(id int64) (*entity.VaccineType, bool, error
 	return v, exist, nil
 }
 
-func (repo *VaccineTypeRepo) GetList(page, pageSize int) (typeList []*entity.VaccineType, err error) {
-	err = repo.DB.Limit(pageSize, (page-1)*pageSize).Find(&typeList)
+func (repo *VaccineTypeRepo) GetList(page, pageSize int) ([]*entity.VaccineType, int64, error) {
+	typeList := make([]*entity.VaccineType, 0)
+	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).FindAndCount(&typeList)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return
+	return typeList, total, nil
+}
+
+func (repo *VaccineTypeRepo) GetIdByType(typeStr string) (int64, bool, error) {
+	var id int64
+	has, err := repo.DB.Where("type = ?", typeStr).Cols("id").Get(&id)
+	if err != nil {
+		return -1, false, err
+	}
+	return id, has, nil
 }
 
 func (repo *VaccineTypeRepo) Count() (total int64, err error) {

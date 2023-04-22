@@ -1,101 +1,58 @@
 package controller
 
 import (
-	"about-vaccine/src/config"
+	"about-vaccine/src/base/handler"
 	"about-vaccine/src/service"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 	"strconv"
 )
 
-// CreateAVaccineCFDA 提交一条CFDA疫苗数据
-func CreateAVaccineCFDA(c *gin.Context) {
-	// 接受传来的数据
-	var v = new(service.Vaccine)
-	err := c.BindJSON(v)
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: "提交数据格式有误！",
-		})
-		return
-	}
-
-	// 创建服务
-	var vService = service.InitVaccineService()
-	err = vService.CreateVaccine(*v)
-	// 判断是否有错误
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "提交成功！",
-	})
+type VaccineController struct {
+	service *service.VaccineService
 }
 
-// GetVaccineCFDAList 查询CFDA疫苗数据
+func NewVaccineController(vaccineService *service.VaccineService) *VaccineController {
+	return &VaccineController{
+		service: vaccineService,
+	}
+}
+
+// GetVaccineList 查询CFDA疫苗数据
 // 可选参数: page, pageSize, productName
-func GetVaccineCFDAList(c *gin.Context) {
+func (v *VaccineController) GetVaccineList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
-	// 得到请求的关键词
-	productName := c.Query("productName")
-	// 创建服务
-	var vService = service.InitVaccineService()
-	// 得到疫苗数据
-	vList, total, err := vService.GetVaccineList(page, pageSize, productName)
-	// 返回数据
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
+	typeStr := c.DefaultQuery("type", "")
+	if len(typeStr) != 0 {
+		list, total, err := v.service.GetByType(typeStr, page, pageSize)
+		handler.HandleResponse(c, err, handler.PagedData{
+			Data:     list,
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
 		})
 		return
 	}
-	more := total-page*pageSize > 0
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "查询成功！",
-		Data: gin.H{
-			"page":        page,
-			"pageSize":    pageSize,
-			"total":       total,
-			"more":        more,
-			"vaccineList": vList,
-		},
+	productName := c.Query("productName")
+	// 得到疫苗数据
+	vList, total, err := v.service.GetByName(productName, page, pageSize)
+	// 返回数据
+	handler.HandleResponse(c, err, handler.PagedData{
+		Data:     vList,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
 	})
 }
 
-func DeleteVaccineCFDAById(c *gin.Context) {
-	s := c.Query("id")
-	if len(s) == 0 {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: "id不能为空！",
-		})
-		return
-	}
-	id, _ := strconv.Atoi(s)
-
-	// 创建服务
-	var vService = service.InitVaccineService()
-	// 删除疫苗
-	if err := vService.DeleteVaccine(int64(id)); err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "删除成功！",
+func (v *VaccineController) GetVaccineTypeList(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
+	list, total, err := v.service.GetTypeList(page, pageSize)
+	handler.HandleResponse(c, err, handler.PagedData{
+		Data:     list,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
 	})
 }

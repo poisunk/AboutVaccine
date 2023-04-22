@@ -15,8 +15,11 @@ func NewVaersSymptomTermRepo(db *dao.DB) *VaersSymptomTermRepo {
 	}
 }
 
-func (repo *VaersSymptomTermRepo) GetBySymptom(keyword string, page, pageSize int) ([]*entity.VaersResult, error) {
-	list := make([]*entity.VaersResult, 0)
-	err := repo.DB.Where("symptom LIKE ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).Find(&list)
-	return list, err
+func (repo *VaersSymptomTermRepo) GetByName(keyword string, page, pageSize int) ([]*entity.VaersSymptomTerm, int64, error) {
+	list := make([]*entity.VaersSymptomTerm, 0)
+	total, err := repo.DB.Where("symptom LIKE ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	if err != nil {
+		return nil, 0, err
+	}
+	return list, total, err
 }

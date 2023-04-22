@@ -1,172 +1,94 @@
 package controller
 
 import (
-	"about-vaccine/src/config"
+	"about-vaccine/src/base/handler"
 	"about-vaccine/src/service"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strconv"
 )
 
+type VaersController struct {
+	service *service.VaersService
+}
+
+func NewVaersController(vaersService *service.VaersService) *VaersController {
+	return &VaersController{
+		service: vaersService,
+	}
+}
+
 // SearchVaers 检索Vaers数据
 // 可选参数：vaccineId, symptomId, page, pageSize
-func SearchVaers(c *gin.Context) {
+func (v *VaersController) SearchVaersResult(c *gin.Context) {
 	vaccineId := c.Query("vaccineId")
 	symptomId := c.Query("symptomId")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	if len(vaccineId) == 0 && len(symptomId) == 0 {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: "两个参数不能同时为空",
-		})
+		handler.HandleResponse(c, errors.New("必须选择一个条件"), nil)
 		return
 	}
-
-	// 准备服务
-	vaersService := service.InitVaersService()
 	if len(vaccineId) == 0 {
-		// 检索symptomId
+		// 通过symptomId检索
 		id, _ := strconv.ParseInt(symptomId, 10, 64)
-		vaers, total, err := vaersService.GetVaersResultsBySymptomId(id, page, pageSize)
-		if err != nil {
-			c.JSON(http.StatusOK, Response{
-				Code:    config.FailureStatus,
-				Message: err.Error(),
-			})
-			return
-		}
-		c.JSON(http.StatusOK, Response{
-			Code:    config.SuccessStatus,
-			Message: "查询成功",
-			Data: gin.H{
-				"results":  vaers,
-				"total":    total,
-				"page":     page,
-				"pageSize": pageSize,
-			},
+		vaers, total, err := v.service.GetResultBySymptomId(id, page, pageSize)
+		handler.HandleResponse(c, err, handler.PagedData{
+			Data:     vaers,
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
 		})
 		return
 	} else if len(symptomId) == 0 {
-		// 检索vaccineId
+		// 通过vaccineId检索
 		id, _ := strconv.ParseInt(vaccineId, 10, 64)
-		vaers, total, err := vaersService.GetVaersResultsByVaccineId(id, page, pageSize)
-		if err != nil {
-			c.JSON(http.StatusOK, Response{
-				Code:    config.FailureStatus,
-				Message: err.Error(),
-			})
-			return
-		}
-		c.JSON(http.StatusOK, Response{
-			Code:    config.SuccessStatus,
-			Message: "查询成功",
-			Data: gin.H{
-				"results":  vaers,
-				"total":    total,
-				"page":     page,
-				"pageSize": pageSize,
-			},
+		vaers, total, err := v.service.GetResultByVaccineId(id, page, pageSize)
+		handler.HandleResponse(c, err, handler.PagedData{
+			Data:     vaers,
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
 		})
 		return
 	} else {
 		// 检索vaccineId, symptomId
 		id, _ := strconv.ParseInt(vaccineId, 10, 64)
 		id2, _ := strconv.ParseInt(symptomId, 10, 64)
-		vaers, err := vaersService.GetVaersResults(id, id2)
-		if err != nil {
-			c.JSON(http.StatusOK, Response{
-				Code:    config.FailureStatus,
-				Message: err.Error(),
-			})
-			return
-		}
-		c.JSON(http.StatusOK, Response{
-			Code:    config.SuccessStatus,
-			Message: "查询成功",
-			Data:    vaers,
-		})
-	}
-}
-
-// GetVaers 获取Vaers数据
-// 必选参数：vaersId
-func GetVaers(c *gin.Context) {
-	vaersId, _ := strconv.ParseInt(c.Param("vaersId"), 10, 64)
-
-	// 准备服务
-	vaersService := service.InitVaersService()
-	vaers, err := vaersService.GetVaersByVaersId(vaersId)
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
-		})
+		vaers, err := v.service.GetResult(id, id2)
+		handler.HandleResponse(c, err, vaers)
 		return
 	}
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "查询成功",
-		Data:    vaers,
-	})
 }
 
 // GetVaersVaccineList 获取Vaers的Vaccine列表
 // 可选参数：page, pageSize, keyword
-func GetVaersVaccineList(c *gin.Context) {
+func (v *VaersController) GetVaersVaccineList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	keyword := c.DefaultQuery("keyword", "")
 
-	// 准备服务
-	vaersService := service.InitVaersVaxService()
-	vaers, total, err := vaersService.GetVaersVaxTermList(keyword, page, pageSize)
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "查询成功",
-		Data: gin.H{
-			"vaccines": vaers,
-			"page":     page,
-			"pageSize": pageSize,
-			"keyword":  keyword,
-			"total":    total,
-		},
+	vaers, total, err := v.service.GetVaccineTermList(keyword, page, pageSize)
+	handler.HandleResponse(c, err, handler.PagedData{
+		Data:     vaers,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
 	})
 }
 
 // GetVaersSymptomList 获取Vaers的Symptom列表
 // 可选参数：page, pageSize, keyword
-func GetVaersSymptomList(c *gin.Context) {
+func (v *VaersController) GetVaersSymptomList(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	keyword := c.DefaultQuery("keyword", "")
 
-	// 准备服务
-	vaersService := service.InitVaersSymptomService()
-	vaers, total, err := vaersService.GetVaersSymptomTermList(keyword, page, pageSize)
-	if err != nil {
-		c.JSON(http.StatusOK, Response{
-			Code:    config.FailureStatus,
-			Message: err.Error(),
-		})
-		return
-	}
-	c.JSON(http.StatusOK, Response{
-		Code:    config.SuccessStatus,
-		Message: "查询成功",
-		Data: gin.H{
-			"symptoms": vaers,
-			"page":     page,
-			"pageSize": pageSize,
-			"keyword":  keyword,
-			"total":    total,
-		},
+	vaers, total, err := v.service.GetSymptomTermList(keyword, page, pageSize)
+	handler.HandleResponse(c, err, handler.PagedData{
+		Data:     vaers,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
 	})
 }
