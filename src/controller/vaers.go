@@ -18,8 +18,7 @@ func NewVaersController(vaersService *service.VaersService) *VaersController {
 	}
 }
 
-// SearchVaers 检索Vaers数据
-// 可选参数：vaccineId, symptomId, page, pageSize
+// SearchVaersResult 检索Vaers数据
 func (v *VaersController) SearchVaersResult(c *gin.Context) {
 	vaccineId := c.Query("vaccineId")
 	symptomId := c.Query("symptomId")
@@ -53,9 +52,9 @@ func (v *VaersController) SearchVaersResult(c *gin.Context) {
 		return
 	} else {
 		// 检索vaccineId, symptomId
-		id, _ := strconv.ParseInt(vaccineId, 10, 64)
-		id2, _ := strconv.ParseInt(symptomId, 10, 64)
-		vaers, err := v.service.GetResult(id, id2)
+		vid, _ := strconv.ParseInt(vaccineId, 10, 64)
+		sid, _ := strconv.ParseInt(symptomId, 10, 64)
+		vaers, err := v.service.GetResult(vid, sid)
 		handler.HandleResponse(c, err, vaers)
 		return
 	}

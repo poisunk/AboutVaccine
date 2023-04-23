@@ -15,7 +15,7 @@ func NewVaersVaxTermRepo(db *dao.DB) *VaersVaxTermRepo {
 
 func (repo *VaersVaxTermRepo) GetByName(keyword string, page, pageSize int) ([]*entity.VaersVaxTerm, int64, error) {
 	list := make([]*entity.VaersVaxTerm, 0)
-	total, err := repo.DB.Where("vaccine LIKE ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	total, err := repo.DB.Where("name LIKE ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
 	if err != nil {
 		return nil, 0, err
 	}

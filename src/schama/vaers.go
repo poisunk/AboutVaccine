@@ -20,11 +20,13 @@ type Vaers struct {
 }
 
 type VaersResult struct {
-	Symptom string  `json:"symptom"`
-	Vaccine string  `json:"vaccine"`
-	Total   int64   `json:"total"`
-	Prr     float64 `json:"prr"`
-	Chi     float64 `json:"chi"`
+	SymptomId int64   `json:"symptomId"`
+	Symptom   string  `json:"symptom"`
+	VaccineId int64   `json:"vaccineId"`
+	Vaccine   string  `json:"vaccine"`
+	Total     int64   `json:"total"`
+	Prr       float64 `json:"prr"`
+	Chi       float64 `json:"chi"`
 }
 
 type VaersSymptom struct {
@@ -59,7 +61,9 @@ type VaersVaxTerm struct {
 }
 
 func (v *VaersResult) GetFormEntity(e *entity.VaersResult) {
+	v.SymptomId = e.SymptomId
 	v.Symptom = e.Symptom
+	v.VaccineId = e.VaccineId
 	v.Vaccine = e.Name
 	v.Total = e.Total
 }

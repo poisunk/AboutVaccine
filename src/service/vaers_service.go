@@ -6,6 +6,7 @@ import (
 	"about-vaccine/src/schama"
 	"errors"
 	"log"
+	"sync"
 )
 
 type VaersService struct {
@@ -41,11 +42,17 @@ func (s *VaersService) GetResultByVaccineId(vid int64, page, pageSize int) ([]*s
 		log.Println(err.Error())
 		return nil, 0, errors.New("查询失败")
 	}
-	list := make([]*schama.VaersResult, len(rl))
+	var wg sync.WaitGroup
+	var list []*schama.VaersResult
 	for _, v := range rl {
-		result := s.completeResult(v)
-		list = append(list, result)
+		wg.Add(1)
+		go func(v *entity.VaersResult) {
+			result := s.completeResult(v)
+			list = append(list, result)
+			wg.Done()
+		}(v)
 	}
+	wg.Wait()
 	return list, total, nil
 }
 
@@ -55,11 +62,17 @@ func (s *VaersService) GetResultBySymptomId(sid int64, page, pageSize int) ([]*s
 		log.Println(err.Error())
 		return nil, 0, errors.New("查询失败")
 	}
-	list := make([]*schama.VaersResult, len(vl))
+	var wg sync.WaitGroup
+	var list []*schama.VaersResult
 	for _, v := range vl {
-		result := s.completeResult(v)
-		list = append(list, result)
+		wg.Add(1)
+		go func(v *entity.VaersResult) {
+			result := s.completeResult(v)
+			list = append(list, result)
+			wg.Done()
+		}(v)
 	}
+	wg.Wait()
 	return list, total, nil
 }
 
@@ -79,7 +92,7 @@ func (s *VaersService) GetVaccineTermList(keyword string, page, pageSize int) ([
 		log.Println(err.Error())
 		return nil, 0, errors.New("查询失败")
 	}
-	list := make([]*schama.VaersVaxTerm, len(tl))
+	var list []*schama.VaersVaxTerm
 	for _, v := range tl {
 		vaccine := &schama.VaersVaxTerm{}
 		vaccine.GetFormEntity(v)
@@ -94,7 +107,7 @@ func (s *VaersService) GetSymptomTermList(keyword string, page, pageSize int) ([
 		log.Println(err.Error())
 		return nil, 0, errors.New("查询失败")
 	}
-	list := make([]*schama.VaersSymptomTerm, len(sl))
+	var list []*schama.VaersSymptomTerm
 	for _, v := range sl {
 		symptom := &schama.VaersSymptomTerm{}
 		symptom.GetFormEntity(v)
@@ -110,22 +123,26 @@ func (s *VaersService) completeResult(v *entity.VaersResult) *schama.VaersResult
 	// 其他不良反应	c			d
 	result := &schama.VaersResult{}
 	result.GetFormEntity(v)
-	total_ac, err := s.vaersResult.SumBySymptomId(v.SymptomId)
+	total_ac, err := s.vaersResult.SumByVaccineId(v.VaccineId)
 	total_ab, err := s.vaersResult.SumBySymptomId(v.SymptomId)
 	total_abcd, err := s.vaersResult.Sum()
+	log.Println(total_ac, total_ab, total_abcd)
 	if err != nil {
 		return result
 	}
 	a := float64(v.Total)
 	b, c := total_ab-a, total_ac-a
 	d := total_abcd - a - b - c
+	if a <= 0 || b <= 0 || c <= 0 || d <= 0 {
+		return result
+	}
 	result.Prr = s.calculatePrr(a, b, c, d)
 	result.Chi = s.calculateChi(a, b, c, d)
 	return result
 }
 
 func (s *VaersService) calculatePrr(a, b, c, d float64) float64 {
-	result := (a * (a + c)) / (b * (b + d))
+	result := (a / (a + c)) / (b / (b + d))
 	return result
 }
 

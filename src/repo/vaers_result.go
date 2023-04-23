@@ -50,7 +50,7 @@ func (repo *VaersResultRepo) GetListBySymptomId(sid int64, page, pageSize int) (
 }
 
 func (repo *VaersResultRepo) SumByVaccineId(vid int64) (float64, error) {
-	total, err := repo.DB.Where("vaccine_id = ?", vid).And("total > 0").
+	total, err := repo.DB.Where("vaccine_id = ?", vid).And("total > 1").
 		Sum(&entity.VaersResult{}, "total")
 	if err != nil {
 		return 0, err
@@ -59,7 +59,7 @@ func (repo *VaersResultRepo) SumByVaccineId(vid int64) (float64, error) {
 }
 
 func (repo *VaersResultRepo) SumBySymptomId(sid int64) (float64, error) {
-	total, err := repo.DB.Where("symptom_id = ?", sid).And("total > 0").
+	total, err := repo.DB.Where("symptom_id = ?", sid).And("total > 1").
 		Sum(&entity.VaersResult{}, "total")
 	if err != nil {
 		return 0, err
@@ -68,7 +68,7 @@ func (repo *VaersResultRepo) SumBySymptomId(sid int64) (float64, error) {
 }
 
 func (repo *VaersResultRepo) Sum() (float64, error) {
-	total, err := repo.DB.Where("total > 0").Sum(&entity.VaersResult{}, "total")
+	total, err := repo.DB.Where("total > 1").Sum(&entity.VaersResult{}, "total")
 	if err != nil {
 		return 0, err
 	}
