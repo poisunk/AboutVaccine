@@ -45,5 +45,13 @@ func (s *OaeTermService) GetParents(IRI string) ([]*entity.OAETerm, error) {
 		list = append(list, o)
 		IRI = o.ParentTermIRI
 	}
+	list = s.Reverse(list)
 	return list, nil
+}
+
+func (s *OaeTermService) Reverse(list []*entity.OAETerm) []*entity.OAETerm {
+	for i, j := 0, len(list)-1; i < j; i, j = i+1, j-1 {
+		list[i], list[j] = list[j], list[i]
+	}
+	return list
 }

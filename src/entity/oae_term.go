@@ -2,12 +2,12 @@ package entity
 
 type OAETerm struct {
 	Id              int    `json:"id"`
-	TermIRI         string `json:"termIRI"`
-	TermLabel       string `json:"termLabel"`
-	ParentTermIRI   string `json:"parentTermIRI"`
-	ParentTermLabel string `json:"parentTermLabel"`
-	AlternativeTerm string `json:"alternativeTerm"`
-	Definition      string `json:"definition"`
+	TermIRI         string `xorm:"TermIRI" json:"termIRI"`
+	TermLabel       string `xorm:"TermLabel" json:"termLabel"`
+	ParentTermIRI   string `xorm:"ParentTermIRI" json:"parentTermIRI"`
+	ParentTermLabel string `xorm:"ParentTermLabel" json:"parentTermLabel"`
+	AlternativeTerm string `xorm:"AlternativeTerm" json:"alternativeTerm"`
+	Definition      string `xorm:"Definition" json:"definition"`
 }
 
 func (o *OAETerm) TableName() string {
