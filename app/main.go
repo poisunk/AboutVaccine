@@ -1,9 +1,7 @@
 package main
 
-import "about-vaccine/src/base/dao"
-
 func main() {
-	r, err := InitApplication(dao.DSN)
+	r, err := InitApplication()
 	if err != nil {
 		panic(err)
 	}

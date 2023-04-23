@@ -4,15 +4,15 @@
 package main
 
 import (
-	"about-vaccine/src/base/dao"
-	"about-vaccine/src/controller"
-	"about-vaccine/src/repo"
-	"about-vaccine/src/router"
-	"about-vaccine/src/service"
+	"about-vaccine/internal/base/dao"
+	"about-vaccine/internal/controller"
+	"about-vaccine/internal/repo"
+	"about-vaccine/internal/router"
+	"about-vaccine/internal/service"
 	"github.com/google/wire"
 )
 
-func InitApplication(dsn string) (*router.APIRouter, error) {
+func InitApplication() (*router.APIRouter, error) {
 	wire.Build(
 		router.ProviderSetRouter,
 		controller.ProviderSetController,

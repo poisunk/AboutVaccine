@@ -7,17 +7,17 @@
 package main
 
 import (
-	"about-vaccine/src/base/dao"
-	"about-vaccine/src/controller"
-	"about-vaccine/src/repo"
-	"about-vaccine/src/router"
-	"about-vaccine/src/service"
+	"about-vaccine/internal/base/dao"
+	"about-vaccine/internal/controller"
+	"about-vaccine/internal/repo"
+	"about-vaccine/internal/router"
+	"about-vaccine/internal/service"
 )
 
 // Injectors from wire.go:
 
-func InitApplication(dsn string) (*router.APIRouter, error) {
-	engine, err := dao.NewEngine(dsn)
+func InitApplication() (*router.APIRouter, error) {
+	engine, err := dao.NewEngine()
 	if err != nil {
 		return nil, err
 	}
