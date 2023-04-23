@@ -43,32 +43,27 @@ func (u *UserController) Register(c *gin.Context) {
 // Login 用户登录
 func (u *UserController) Login(c *gin.Context) {
 	// 1. 尝试使用cookie登录
-	cookie, err := c.Cookie("user_token")
-	if err != nil {
-		handler.HandleResponse(c, err, nil)
-		return
-	}
+	cookie, _ := c.Cookie("user_token")
 	if len(cookie) != 0 {
 		claim, err := u.UserService.LoginWithToken(cookie)
-		if err == nil {
-			c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
-				"/", "localhost", false, true)
-		}
-		handler.HandleResponse(c, err, nil)
+		t := c.DefaultQuery("type", "cookie")
+		handler.HandleClaimResponse(c, err, t, claim)
 		return
 	}
 	// 2. 尝试使用token登录
 	token := c.DefaultQuery("token", "")
 	if len(token) != 0 {
 		claim, err := u.UserService.LoginWithToken(token)
-		handler.HandleResponse(c, err, claim)
+		t := c.DefaultQuery("type", "token")
+		handler.HandleClaimResponse(c, err, t, claim)
 		return
 	}
 	// 3. 使用用户密码登录
 	name := c.DefaultQuery("username", "")
 	password := c.DefaultQuery("password", "")
 	claim, err := u.UserService.Login(name, password)
-	handler.HandleResponse(c, err, claim)
+	t := c.DefaultQuery("type", "token")
+	handler.HandleClaimResponse(c, err, t, claim)
 }
 
 // Logout 用户注销

@@ -2,8 +2,10 @@ package handler
 
 import (
 	"about-vaccine/internal/config"
+	"about-vaccine/internal/schama"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 type RespBody struct {
@@ -39,4 +41,17 @@ func HandleResponse(c *gin.Context, err error, data interface{}) {
 		Message: "ok",
 		Data:    data,
 	})
+}
+
+func HandleClaimResponse(c *gin.Context, err error, t string, claim *schama.UserClaim) {
+	if t == "cookie" {
+		if err == nil && claim != nil {
+			c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
+				"/", "localhost", false, true)
+		}
+		HandleResponse(c, err, nil)
+		return
+	}
+	c.SetCookie("user_token", "", -1, "/", "localhost", false, true)
+	HandleResponse(c, err, claim)
 }
