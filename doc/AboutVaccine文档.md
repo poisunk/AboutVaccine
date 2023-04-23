@@ -2,17 +2,23 @@
 
 http://43.140.194.248:8080/api
 
-# 得到所有不良反应报告
+# 得到不良反应报告
 
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
+说明：调用此接口，可以获取不良反应报告，可以通过`id`与`uid`获取相应的不良反应报告。
+
+**可选参数**： `page`：页码，默认1，`pageSize`：页面大小，默认20，`id`：指定报告id，`uid`：指定用户
 
 **接口地址**：`GET` /adverse
 
-**调用例子**：/adverse?page=1&pageSize=5
+**调用例子**：:pushpin:/adverse?page=1&pageSize=5	:pushpin:/adverse?uid=23	:pushpin:/adverse?id=22
+
+
 
 # 创建一个不良反应报告
 
-**必选参数**：`token`：令牌
+说明：调用此接口，可以创建一个不良反应报告记录，可以选择是否携带token。报告中只有不良反应描述是必填的。
+
+**可选参数**：`token`：令牌
 
 **携带json**：
 
@@ -38,13 +44,19 @@ http://43.140.194.248:8080/api
             "route": "",// 接种途径
             "site": "face"// 接种部位
         }
+    ],
+    "symptomList": [//不良反应症状列表
+        {
+            "symptom": "fever",
+            "oaeId": 4
+        }
     ]
 }
 ~~~
 
 **接口地址**：`POST` /adverse
 
-**调用例子**：/adverse?token=...
+**调用例子**：:pushpin:/adverse?token=...	:pushpin:/adverse
 
 # 删除一个不良反应报告
 
@@ -52,17 +64,17 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`DELETE` /adverse
 
-**调用例子**：/adverse?id=2&token=...
+**调用例子**：:pushpin:/adverse?id=2&token=...
 
 # 查询疫苗数据
 
 说明：调用此接口，可获得所有疫苗数据。如果productName不为空，则会返回所有与productName详细的疫苗数据。
 
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20，`productName`：产品名称
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20，`productName`：产品名称，`type`：疫苗类型
 
 **接口地址**：`GET` /vaccine/cfda
 
-**调用例子**：/vaccine/cfda?page=1&pageSize=5&productName=新冠
+**调用例子**：:pushpin:/vaccine/cfda?page=1&pageSize=5&productName=新冠	:pushpin:/vaccine/cfda?type=新冠疫苗
 
 **字段说明**：
 
@@ -86,79 +98,55 @@ http://43.140.194.248:8080/api
 "drugCodeNote": ""//药品本位码备注
 ~~~
 
-# 提交一条疫苗数据
+# 获取疫苗类型
 
-说明：调用此接口，可以提交一条疫苗数据。携带数据格式与返回的疫苗数据格式一致。
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
 
-**接口地址**：`POST` /vaccine/cfda
+**接口地址**：`GET` /vaccine/type
 
-**调用例子**：/vaccine/cfda
-
-# 删除疫苗
-
-**必选参数**：`id`：删除疫苗id
-
-**接口地址**：`DELETE` /vaccine/cfda
-
-**调用例子**：/vaccine/cfda
-
-# 得到疫苗展示数据
-
-1. **可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认5，`limit`：每个疫苗类型中疫苗的最大数量
-
-   **接口地址**：`GET` /vaccine/example
-
-   **调用例子**：/vaccine/example
-
-2. **可选参数**：`tid`：疫苗类型id，`limit`：每个疫苗类型中疫苗的最大数量
-
-   **接口地址**：`GET` /vaccine/example/:tid
-
-   **调用例子**：/vaccine/example/2
+**调用例子**：:pushpin:/vaccine/type?page=1&pageSize=5
 
 # 用户注册
 
-说明：用户名不能重复
+说明：用户名不能重复，可以选择json返回，或者返回cookie。
+
+**可选参数**：`type`：返回方式，可选json/cookie，默认json
 
 **必选参数**：`username`：用户名，`password`：密码
 
 **接口地址**：`POST` /user/register
 
-**调用例子**：/user/register?username=test&password=123456
+**调用例子**：:pushpin:/user/register?username=test&password=123456	:pushpin:/user/register?username=test& password=123456&type=cookie
 
 # 用户登录
 
-**必选参数**：`username`：用户名，`password`：密码
+说明：如果已经登录将会返回一个新的token，token有效期为24小时。服务端首先会检查，是否已经携带了token，如果有会优先使用token进行登录，优先级为cookie>token>password。注意：如果使用token或者password登录，则默认返回json，如果使用cookie登录，则默认返回cookie。
+
+**可选参数**：`username`：用户名，`password`：密码，`token`：已经登录的令牌，`type`：返回方式，可选json/cookie
 
 **接口地址**：`POST` /user/login
 
-**调用例子**：/user/login?username=test&password=123456
-
-# 登录状态检查/刷新
-
-说明：token有效期为24小时
-
-**必选参数**：`token`：令牌
-
-**接口地址**：`GET` /user/status
-
-**调用例子**：/user/status?token=...
+**调用例子**：:pushpin:/user/login?username=test&password=123456 :pushpin:/user/login?token=...	:pushpin:/user/login	:pushpin:/user/login?type=json
 
 # 用户注销
 
-**必选参数**：`token`：令牌
+说明：注销用户将会删除用户数据，可以通过cookie或者token注销。
+
+**可选参数**：`token`：令牌
 
 **接口地址**：`GET` /user/logout
 
-**调用例子**：/user/logout?token=...
+**调用例子**：:pushpin:/user/logout?token=...	:pushpin:/user/logout
 
-# 获取用户列表
+# 查询用户
 
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
+说明：调用此接口将会通过username查询相似用户。
+
+**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20，`username`：用户名
 
 **接口地址**：`GET` /user/list
 
-**调用例子**：/user/list
+**调用例子**：:pushpin:/user/search	:pushpin:/user/search?username=test
 
 # 查询OAE词条
 
@@ -166,13 +154,13 @@ http://43.140.194.248:8080/api
 
    **接口地址**：`GET` /oae/label
 
-   **调用例子**：/oae/label?label=fever
+   **调用例子**：:pushpin:/oae/label?label=fever
 
 2. **必选参数**：`IRI`：OAE词条链接
 
    **接口地址**：`GET` /oae/IRI
 
-   **调用地址**：/oae/IRI?IRI=http://purl.obolibrary.org/obo/OAE_0000043
+   **调用地址**：:pushpin:/oae/IRI?IRI=http://purl.obolibrary.org/obo/OAE_0000043
 
 # 获取OAE父类词条
 
@@ -180,159 +168,9 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`GET` /oae/parent
 
-**调用例子**：/oae/parent?IRI=http://purl.obolibrary.org/obo/OAE_0000043
+**调用例子**：:pushpin:/oae/parent?IRI=http://purl.obolibrary.org/obo/OAE_0000043
 
-# 获取问卷列表
-
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
-
-**接口地址**：`GET` /questionnaire
-
-**调用例子**：/questionnaire?page=1&pageSize=20
-
-# 获取用户的所有问卷
-
-**路径参数**：`uid`：用户id
-
-**接口地址**：`GET` /questionnaire/user/:uid
-
-**调用例子**：/questionnaire/user/12
-
-# 创建一个问卷
-
-**必选参数**：`token`：令牌
-
-**携带json**：
-
-~~~json
-{
-    "name": "dadasdasd",//名称
-    "description": ""//描述
-}
-~~~
-
-**接口地址**：`POST` /questionnaire
-
-**调用例子**：/questionnaire?token=...
-
-# 删除问卷
-
-**必选参数**：`token`：令牌
-
-**路径参数**：`id`：问卷id
-
-**接口地址**：`DELETE` /questionnaire/:id
-
-**调用例子**：/quesionnaire/15?token=...
-
-# 获取问卷中的所有问题
-
-**路径参数**：`id`：问卷id
-
-**接口地址**：`GET`：/questionnaire/:id/questions
-
-**调用例子**：/questionnaire/15/questions
-
-# 获取所有问题类型
-
-**接口地址**：`GET` /questionnaire/questions/type
-
-**调用例子**：/questionnaire/questions/type
-
-# 创建问题
-
-**必选参数**：`token`：令牌
-
-**路径参数**：`id`：问卷id
-
-**携带json**：
-
-~~~json
-[{
-    "content": "question 1",
-    "type": "单选题",
-    "isRequired": true,
-    "options": [
-        "option"
-    ],
-    "order": 5
-},{
-    "content": "sadafasfad",
-    "type": "填空题",
-    "isRequired": false
-}]
-~~~
-
-**接口地址**：`GET` /questionnaire/:id/questions
-
-**调用例子**：/questionnaire/15/questions?token=...
-
-# 删除问题
-
-**必选参数**：`token`：令牌
-
-**路径参数**：`id`：问卷id，`qid`：问题id
-
-**接口地址**：`DELETE` /questionnaire/:id/questions/:qid
-
-**调用例子**：/questionnaire/15/questions/30?token=...
-
-# 获取一个问卷的所有回答
-
-**必选参数**：`token`：令牌
-
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认10
-
-**路径参数**：`id`：问卷id
-
-**接口地址**：`GET` /questionnaire/:id/response
-
-**调用例子**：/questionnaire/15/response?token=...&page=1&pageSize=5
-
-# 获取我的所有回答
-
-**必选参数**：`token`：令牌
-
-**可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认10
-
-**接口地址**：`GET` /questionnaire/response/mine
-
-**调用例子**：/questionnaire/response/mine?token=...&page=1&pageSize=5
-
-# 提交回答
-
-**必选参数**：`token`：令牌
-
-**路径参数**：`id`：问卷id
-
-**携带json**：
-
-~~~json
-{
-    "responseTermList": [
-        {
-            "questionId": 29,
-            "answer": "test answer"
-        }
-    ]
-}
-~~~
-
-**接口地址**：`POST` /questionnaire/:id/response
-
-**调用例子**：/questionnaire/15/response?token=...
-
-# 删除回答
-
-**必选参数**：`token`：令牌，`responseId`：目标回答id
-
-**路径参数**：`id`：问卷id
-
-**接口地址**：`POST` /questionnaire/:id/response
-
-**调用例子**：/questionnaire/15/response?token=...&responseId=16
-
-# 检索Vaers数据
+# 检索Vaers统计数据
 
 **可选参数**：`page`：页码，默认1，`pageSize`：页面大小，默认20
 
@@ -340,15 +178,7 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`GET` /vaers
 
-**调用例子**：/vaers?page=1&pageSize=5&vaccineId=72
-
-# 获取Vaers数据
-
-**路径参数**：`vaersId`：Vaers数据Id
-
-**接口地址**：`GET` /vaers/:vaersId
-
-**调用例子**：/vaers/:2547730
+**调用例子**：:pushpin:/vaers?page=1&pageSize=5&vaccineId=72
 
 # 获取Vaers的疫苗列表
 
@@ -356,7 +186,7 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`GET` /vaers/vaccine
 
-**调用例子**：/vaers/vaccine?page=1&pageSize=5&keyword=COVId
+**调用例子**：:pushpin:/vaers/vaccine?page=1&pageSize=5&keyword=COVId
 
 # 获取Vaers的症状列表
 
@@ -364,4 +194,4 @@ http://43.140.194.248:8080/api
 
 **接口地址**：`GET` /vaers/symptom
 
-**调用例子**：/vaers/symptom?page=1&pageSize=5&keyword=EYE
+**调用例子**：:pushpin:/vaers/symptom?page=1&pageSize=5&keyword=EYE
