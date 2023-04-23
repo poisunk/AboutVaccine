@@ -5,6 +5,7 @@ import (
 	"about-vaccine/src/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 )
 
 type UserController struct {
@@ -24,65 +25,75 @@ func (u *UserController) Register(c *gin.Context) {
 	name := c.DefaultQuery("username", "")
 	password := c.DefaultQuery("password", "")
 	// 注册，得到token
-	token, err := u.UserService.Register(name, password)
+	claim, err := u.UserService.Register(name, password)
 	if err != nil {
 		handler.HandleResponse(c, err, nil)
 		return
 	}
 	t := c.DefaultQuery("type", "json")
 	if t == "json" {
-		handler.HandleResponse(c, err, gin.H{
-			token: token,
-		})
+		handler.HandleResponse(c, err, claim)
 	} else if t == "cookie" {
-		c.SetCookie("user_token", token, 3600, "/", "localhost", false, true)
+		c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
+			"/", "localhost", false, true)
 		handler.HandleResponse(c, err, nil)
 	}
 }
 
 // Login 用户登录
 func (u *UserController) Login(c *gin.Context) {
-	// 1. 如果有token，先尝试使用token登录
-	token := c.DefaultQuery("token", "")
-	if token != "" {
-		newToken, err := u.UserService.LoginWithToken(token)
-		if err == nil {
-			handler.HandleResponse(c, err, gin.H{
-				token: newToken,
-			})
-			return
-		}
-	}
-	// 2. 使用cookie登录
+	// 1. 尝试使用cookie登录
 	cookie, err := c.Cookie("user_token")
-	if cookie != "" {
-		newToken, err := u.UserService.LoginWithToken(cookie)
-		if err == nil {
-			handler.HandleResponse(c, err, gin.H{
-				token: newToken,
-			})
-			return
-		}
+	if err != nil {
+		handler.HandleResponse(c, err, nil)
+		return
 	}
-	// 3. 使用用户名与密码登录
+	if len(cookie) != 0 {
+		claim, err := u.UserService.LoginWithToken(cookie)
+		if err == nil {
+			c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
+				"/", "localhost", false, true)
+		}
+		handler.HandleResponse(c, err, nil)
+		return
+	}
+	// 2. 尝试使用token登录
+	token := c.DefaultQuery("token", "")
+	if len(token) != 0 {
+		claim, err := u.UserService.LoginWithToken(token)
+		handler.HandleResponse(c, err, claim)
+		return
+	}
+	// 3. 使用用户密码登录
 	name := c.DefaultQuery("username", "")
 	password := c.DefaultQuery("password", "")
-	token, err = u.UserService.Login(name, password)
-	handler.HandleResponse(c, err, gin.H{
-		token: token,
-	})
+	claim, err := u.UserService.Login(name, password)
+	handler.HandleResponse(c, err, claim)
 }
 
 // Logout 用户注销
 func (u *UserController) Logout(c *gin.Context) {
-	token := c.Query("token")
-	err := u.UserService.Logout(token)
-	handler.HandleResponse(c, err, nil)
+	cookie, _ := c.Cookie("user_token")
+	if len(cookie) != 0 {
+		err := u.UserService.Logout(cookie)
+		if err == nil {
+			c.SetCookie("user_token", cookie, -1,
+				"/", "localhost", false, true)
+			handler.HandleResponse(c, err, nil)
+			return
+		}
+	}
+	token := c.DefaultQuery("token", "")
+	if len(token) != 0 {
+		err := u.UserService.Logout(token)
+		handler.HandleResponse(c, err, nil)
+		return
+	}
 }
 
 // SearchUser 搜索用户
 func (u *UserController) SearchUser(c *gin.Context) {
-	keyword := c.DefaultQuery("keyword", "")
+	keyword := c.DefaultQuery("username", "")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	users, total, err := u.UserService.SearchUserByName(keyword, page, pageSize)

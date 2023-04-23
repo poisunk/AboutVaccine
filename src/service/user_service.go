@@ -19,50 +19,59 @@ func NewUserService(repo *repo.UserRepo) *UserService {
 	return &UserService{userRepo: repo}
 }
 
-func (s *UserService) Login(username, password string) (string, error) {
+func (s *UserService) Login(username, password string) (*schama.UserClaim, error) {
 	if len(username) == 0 || len(password) == 0 {
-		return "", errors.New("用户名或密码为空")
+		return nil, errors.New("用户名或密码为空")
 	}
 	u, _, err := s.userRepo.GetByName(username)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("用户不存在")
+		return nil, errors.New("用户不存在")
 	}
 	if s.encodePassword(password) != u.Password {
-		return "", errors.New("密码错误")
+		return nil, errors.New("密码错误")
 	}
 	token, err := jwt.GenerateToken(u.Uid, u.Nickname)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("token生成失败")
+		return nil, errors.New("token生成失败")
 	}
-	return token, nil
+	claim := &schama.UserClaim{
+		Uid:      u.Uid,
+		Nickname: u.Nickname,
+		Token:    token,
+	}
+	return claim, nil
 }
 
-func (s *UserService) Register(username, password string) (string, error) {
+func (s *UserService) Register(username, password string) (*schama.UserClaim, error) {
 	if len(username) == 0 || len(password) == 0 {
-		return "", errors.New("用户名或密码为空")
+		return nil, errors.New("用户名或密码为空")
 	}
-	u, _, err := s.userRepo.GetByName(username)
-	if err == nil {
-		log.Println(err.Error())
-		return "", errors.New("用户已存在")
+	u, has, _ := s.userRepo.GetByName(username)
+	if has {
+		return nil, errors.New("用户已存在")
 	}
 	u = &entity.User{
 		Nickname: username,
 		Password: s.encodePassword(password),
 	}
-	err = s.userRepo.Create(u)
+	err := s.userRepo.Create(u)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("注册失败")
+		return nil, errors.New("注册失败")
 	}
 	token, err := jwt.GenerateToken(u.Uid, u.Nickname)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("token生成失败")
+		return nil, errors.New("token生成失败")
 	}
-	return token, nil
+	claim := &schama.UserClaim{
+		Uid:      u.Uid,
+		Nickname: u.Nickname,
+		Token:    token,
+	}
+	return claim, nil
 }
 
 func (s *UserService) Logout(token string) error {
@@ -80,19 +89,24 @@ func (s *UserService) Logout(token string) error {
 	return nil
 }
 
-func (s *UserService) LoginWithToken(token string) (string, error) {
+func (s *UserService) LoginWithToken(token string) (*schama.UserClaim, error) {
 	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("无效的token")
+		return nil, errors.New("无效的token")
 	}
 	uid, _ := strconv.ParseInt(claim.Id, 10, 64)
 	newToken, err := jwt.GenerateToken(uid, claim.Audience)
 	if err != nil {
 		log.Println(err.Error())
-		return "", errors.New("token生成失败")
+		return nil, errors.New("token生成失败")
 	}
-	return newToken, nil
+	userClaim := &schama.UserClaim{
+		Uid:      uid,
+		Nickname: claim.Audience,
+		Token:    newToken,
+	}
+	return userClaim, nil
 }
 
 func (s *UserService) SearchUserByName(keyword string, page, pageSize int) ([]*schama.User, int64, error) {

@@ -42,6 +42,15 @@ func (repo *AdverseEventRepo) GetListByUid(uid int64, page, pageSize int) ([]*en
 	return list, total, nil
 }
 
+func (repo *AdverseEventRepo) GetUid(id int64) (int64, bool, error) {
+	var uid int64
+	has, err := repo.DB.Table(&entity.AdverseEvent{}).ID(id).Cols("uid").Get(&uid)
+	if err != nil {
+		return 0, false, err
+	}
+	return uid, has, nil
+}
+
 func (repo *AdverseEventRepo) Count() (int64, error) {
 	total, err := repo.DB.Count(&entity.AdverseEvent{})
 	if err != nil {
@@ -52,6 +61,10 @@ func (repo *AdverseEventRepo) Count() (int64, error) {
 
 func (repo *AdverseEventRepo) Create(event ...*entity.AdverseEvent) error {
 	_, err := repo.DB.Insert(event)
+	return err
+}
+func (repo *AdverseEventRepo) CreateOne(event *entity.AdverseEvent) error {
+	_, err := repo.DB.InsertOne(event)
 	return err
 }
 

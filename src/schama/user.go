@@ -3,8 +3,14 @@ package schama
 import "about-vaccine/src/entity"
 
 type User struct {
-	Uid      int64
-	Nickname string
+	Uid      int64  `json:"uid"`
+	Nickname string `json:"nickname"`
+}
+
+type UserClaim struct {
+	Uid      int64  `json:"uid"`
+	Nickname string `json:"nickname"`
+	Token    string `json:"token"`
 }
 
 func (u *User) GetFormEntity(user *entity.User) {

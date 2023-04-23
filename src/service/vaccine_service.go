@@ -24,10 +24,9 @@ func NewVaccineService(
 }
 
 func (s *VaccineService) Get(id int64) (*schama.Vaccine, error) {
-	v, _, err := s.VaccineRepo.GetByID(id)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, errors.New("获取Vaccine失败")
+	v, has, err := s.VaccineRepo.GetByID(id)
+	if err != nil || !has {
+		return nil, errors.New("疫苗不存在")
 	}
 	if len(v.Type) == 0 {
 		err := s.setupVaccineType(v)

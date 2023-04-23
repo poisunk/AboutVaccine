@@ -26,7 +26,8 @@ func (repo *AdverseVaccineRepo) GetById(id int64) (*entity.AdverseVaccine, bool,
 
 func (repo *AdverseVaccineRepo) GetByEventId(eventId int64) ([]*entity.AdverseVaccine, error) {
 	var list []*entity.AdverseVaccine
-	err := repo.DB.Where("event_id = ?", eventId).Find(&list)
+	//TODO
+	err := repo.DB.Where("adverse_event_id = ?", eventId).Find(&list)
 	if err != nil {
 		return nil, err
 	}

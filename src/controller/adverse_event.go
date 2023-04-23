@@ -6,6 +6,7 @@ import (
 	"about-vaccine/src/service"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"log"
 	"strconv"
 )
 
@@ -24,12 +25,14 @@ func (a *AdverseEventController) CreateAdverseEvent(c *gin.Context) {
 	var adverseEvent = new(schama.AdverseEvent)
 	err := c.ShouldBindJSON(adverseEvent)
 	if err != nil {
+		log.Println(err.Error())
 		handler.HandleResponse(c, errors.New("json格式错误"), nil)
 		return
 	}
 	uid := c.GetString("userId")
 	if len(uid) != 0 {
-		adverseEvent.Uid, _ = strconv.ParseInt(uid, 10, 64)
+		uid, _ := strconv.ParseInt(uid, 10, 64)
+		adverseEvent.Uid = &uid
 	}
 	// 创建服务
 	err = a.AdverseEventService.Create(adverseEvent)
@@ -50,7 +53,7 @@ func (a *AdverseEventController) GetAdverseEvent(c *gin.Context) {
 		return
 	}
 	// 2. 获取uid，是否通过uid查询
-	s = c.GetString("userId")
+	s = c.Query("uid")
 	if len(s) != 0 {
 		// 根据uid查询
 		uid, _ := strconv.ParseInt(s, 10, 64)

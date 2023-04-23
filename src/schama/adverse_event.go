@@ -3,13 +3,12 @@ package schama
 import (
 	"about-vaccine/src/entity"
 	"about-vaccine/src/utile"
-	"database/sql"
 	"time"
 )
 
 type AdverseEvent struct {
 	Id                  int64             `json:"id"`
-	Uid                 int64             `json:"uid"`
+	Uid                 *int64            `json:"uid"`
 	Code                string            `json:"code"`
 	Name                string            `json:"name"`
 	Sex                 string            `json:"sex"`
@@ -29,6 +28,7 @@ type AdverseEvent struct {
 
 type AdverseVaccine struct {
 	Id            int64      `json:"id"`
+	VaccineId     int64      `json:"vaccineId"`
 	Type          string     `json:"type"`
 	Manufacturer  string     `json:"manufacturer"`
 	Name          string     `json:"name"`
@@ -42,42 +42,18 @@ type AdverseSymptom struct {
 	Id      int64  `json:"id"`
 	EventId int64  `json:"eventId"`
 	Symptom string `json:"symptom"`
-	OaeId   int64  `json:"oaeId"`
+	OaeId   *int64 `json:"oaeId"`
 }
 
 func (a *AdverseEvent) ToEntity() *entity.AdverseEvent {
 	event := &entity.AdverseEvent{}
 	_ = utile.StructConv(a, event)
-	if a.Uid != 0 {
-		event.Uid = sql.NullInt64{
-			Int64: a.Uid,
-			Valid: true,
-		}
-	}
-	if a.Birth != nil {
-		event.Birth = sql.NullTime{
-			Time:  *a.Birth,
-			Valid: true,
-		}
-	}
-	if a.OnsetDate != nil {
-		event.OnsetDate = sql.NullTime{
-			Time:  *a.OnsetDate,
-			Valid: true,
-		}
-	}
 	return event
 }
 
 func (a *AdverseVaccine) ToEntity() *entity.AdverseVaccine {
 	vaccine := &entity.AdverseVaccine{}
 	_ = utile.StructConv(a, vaccine)
-	if a.VaccinateDate != nil {
-		vaccine.VaccinateDate = sql.NullTime{
-			Time:  *a.VaccinateDate,
-			Valid: true,
-		}
-	}
 	return vaccine
 }
 
@@ -91,13 +67,13 @@ func (a *AdverseEvent) GetFromEntity(e *entity.AdverseEvent) {
 	_ = utile.StructConv(e, a)
 }
 
-func (a *AdverseVaccine) GetFromVaccine(e *entity.AdverseVaccine, v *Vaccine) {
+func (a *AdverseVaccine) GetFromEntity(e *entity.AdverseVaccine, v *Vaccine) {
 	_ = utile.StructConv(e, a)
 	a.Type = v.Type
 	a.Name = v.ProductName
 	a.Manufacturer = v.ProductionCompany
 }
 
-func (a *AdverseSymptom) GetFromSymptom(e *entity.AdverseSymptom) {
+func (a *AdverseSymptom) GetFromEntity(e *entity.AdverseSymptom) {
 	_ = utile.StructConv(e, a)
 }

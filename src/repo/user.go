@@ -43,12 +43,12 @@ func (repo *UserRepo) GetBySimilarName(name string, page, pageSize int) ([]*enti
 	return users, total, nil
 }
 
-func (repo *UserRepo) Create(user ...*entity.User) error {
-	_, err := repo.DB.Insert(user)
+func (repo *UserRepo) Create(user *entity.User) error {
+	_, err := repo.DB.InsertOne(user)
 	return err
 }
 
-func (repo *UserRepo) Delete(id int64) error {
-	_, err := repo.DB.ID(id).Delete(&entity.User{})
+func (repo *UserRepo) Delete(uid int64) error {
+	_, err := repo.DB.Where("uid = ?", uid).Delete(&entity.User{})
 	return err
 }
