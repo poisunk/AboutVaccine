@@ -2,6 +2,7 @@ package controller
 
 import (
 	"about-vaccine/internal/base/handler"
+	"about-vaccine/internal/config"
 	"about-vaccine/internal/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -34,7 +35,7 @@ func (u *UserController) Register(c *gin.Context) {
 	if t == "json" {
 		handler.HandleResponse(c, err, claim)
 	} else if t == "cookie" {
-		c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
+		c.SetCookie(config.UserClaimCookie, claim.Token, int(time.Hour.Milliseconds()*24),
 			"/", "localhost", false, true)
 		handler.HandleResponse(c, err, nil)
 	}
@@ -43,7 +44,7 @@ func (u *UserController) Register(c *gin.Context) {
 // Login 用户登录
 func (u *UserController) Login(c *gin.Context) {
 	// 1. 尝试使用cookie登录
-	cookie, _ := c.Cookie("user_token")
+	cookie, _ := c.Cookie(config.UserClaimCookie)
 	if len(cookie) != 0 {
 		claim, err := u.UserService.LoginWithToken(cookie)
 		t := c.DefaultQuery("type", "cookie")
@@ -68,11 +69,11 @@ func (u *UserController) Login(c *gin.Context) {
 
 // Logout 用户注销
 func (u *UserController) Logout(c *gin.Context) {
-	cookie, _ := c.Cookie("user_token")
+	cookie, _ := c.Cookie(config.UserClaimCookie)
 	if len(cookie) != 0 {
 		err := u.UserService.Logout(cookie)
 		if err == nil {
-			c.SetCookie("user_token", cookie, -1,
+			c.SetCookie(config.UserClaimCookie, cookie, -1,
 				"/", "localhost", false, true)
 			handler.HandleResponse(c, err, nil)
 			return

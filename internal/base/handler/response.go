@@ -46,12 +46,12 @@ func HandleResponse(c *gin.Context, err error, data interface{}) {
 func HandleClaimResponse(c *gin.Context, err error, t string, claim *schama.UserClaim) {
 	if t == "cookie" {
 		if err == nil && claim != nil {
-			c.SetCookie("user_token", claim.Token, int(time.Hour.Milliseconds()*24),
+			c.SetCookie(config.UserClaimCookie, claim.Token, int(time.Hour.Milliseconds()*24),
 				"/", "localhost", false, true)
 		}
 		HandleResponse(c, err, nil)
 		return
 	}
-	c.SetCookie("user_token", "", -1, "/", "localhost", false, true)
+	c.SetCookie(config.UserClaimCookie, "", -1, "/", "localhost", false, true)
 	HandleResponse(c, err, claim)
 }
