@@ -13,6 +13,7 @@ type AdverseEventRepo interface {
 	Get(id int64) (*entity.AdverseEvent, bool, error)
 	GetList(page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
 }
 
@@ -167,6 +168,9 @@ func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*sc
 	return eventInfos, total, nil
 }
 
+func (a *AdverseReportCommon) GetUid(id int64) (int64, bool, error) {
+	return a.adverseEventRepo.GetUid(id)
+}
 func (a *AdverseReportCommon) LoadVaccineAndSymptomList(event *schema.AdverseEventInfo) error {
 	vaccineList, err := a.GetVaccineListByEventId(event.Id)
 	if err != nil {

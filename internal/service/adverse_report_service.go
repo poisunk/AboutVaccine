@@ -68,8 +68,20 @@ func (a *AdverseReportService) GetListByUid(uid int64, page, pageSize int) ([]*s
 	return el, total, nil
 }
 
-func (a *AdverseReportService) Delete(id int64) error {
-	err := a.common.Delete(id)
+func (a *AdverseReportService) Delete(id int64, token string) error {
+	claim, err := jwt.ParseToken(token)
+	if err != nil {
+		return errors.New("无效token")
+	}
+	owner, has, err := a.common.GetUid(id)
+	if err != nil {
+		return errors.New("不良反应报告不存在")
+	}
+	uid, _ := strconv.ParseInt(claim.Id, 10, 64)
+	if uid != owner || !has {
+		return errors.New("没有权限")
+	}
+	err = a.common.Delete(id)
 	if err != nil {
 		log.Println(err.Error())
 		return errors.New("删除Event失败")

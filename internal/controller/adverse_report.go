@@ -74,6 +74,7 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 
 func (a *AdverseReportController) DeleteAdverseEvent(c *gin.Context) {
 	// 获取id
+	token := c.Query("token")
 	s := c.Query("id")
 	if len(s) == 0 {
 		handler.HandleResponse(c, errors.New("id不能为空"), nil)
@@ -81,6 +82,6 @@ func (a *AdverseReportController) DeleteAdverseEvent(c *gin.Context) {
 	}
 	id, _ := strconv.ParseInt(s, 10, 64)
 	// 根据id删除
-	err := a.AdverseEventService.Delete(id)
+	err := a.AdverseEventService.Delete(id, token)
 	handler.HandleResponse(c, err, nil)
 }

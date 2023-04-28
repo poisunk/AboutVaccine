@@ -2,7 +2,6 @@ package router
 
 import (
 	"about-vaccine/internal/controller"
-	"about-vaccine/internal/middleware/jwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -51,9 +50,9 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 		apiGroup.GET("/vaccine/cfda", a.VaccineController.GetVaccineList)
 		apiGroup.GET("/vaccine/type", a.VaccineController.GetVaccineTypeList)
 		// 不良反应
-		apiGroup.POST("/adverse", jwt.AuthWithoutLogin, a.AdverseEventController.CreateAdverseEvent)
+		apiGroup.POST("/adverse", a.AdverseEventController.CreateAdverseEvent)
 		apiGroup.GET("/adverse", a.AdverseEventController.GetAdverseEvent)
-		apiGroup.DELETE("/adverse", jwt.Auth, a.AdverseEventController.DeleteAdverseEvent)
+		apiGroup.DELETE("/adverse", a.AdverseEventController.DeleteAdverseEvent)
 		// OAE相关数据
 		apiGroup.GET("/oae/label", a.OAETermController.GetOaeTermsByLabel)
 		apiGroup.GET("/oae/IRI", a.OAETermController.GetOaeTermByIRI)
