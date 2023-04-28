@@ -46,8 +46,10 @@ func HandleResponse(c *gin.Context, err error, data interface{}) {
 func HandleClaimResponse(c *gin.Context, err error, t string, claim *schema.UserClaim) {
 	if t == "cookie" {
 		if err == nil && claim != nil {
-			c.SetCookie(config.UserClaimCookie, claim.Token, int(time.Hour.Milliseconds()*24),
+			c.SetCookie(config.UserClaimCookie, claim.Token, int(time.Hour.Seconds()*24),
 				"/", "localhost", false, true)
+		} else if err != nil {
+			c.SetCookie(config.UserClaimCookie, "", -1, "/", "localhost", false, true)
 		}
 		HandleResponse(c, err, nil)
 		return
