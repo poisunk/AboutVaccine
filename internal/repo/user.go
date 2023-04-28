@@ -27,7 +27,7 @@ func (repo *UserRepo) GetByName(name string) (*entity.User, bool, error) {
 
 func (repo *UserRepo) GetListBySimilarName(name string, page, pageSize int) ([]*entity.User, int64, error) {
 	var users []*entity.User
-	total, err := repo.DB.Where("nickname LIKE ?", "%"+name+"%").Cols("uid", "nickname").
+	total, err := repo.DB.Where("nickname LIKE ?", "%"+name+"%").Cols("id", "nickname").
 		Limit(pageSize, (page-1)*pageSize).FindAndCount(&users)
 	if err != nil {
 		return nil, 0, err
