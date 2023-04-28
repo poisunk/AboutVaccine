@@ -1,9 +1,9 @@
 package entity
 
 type User struct {
-	Uid      int64  `xorm:"autoincr" json:"uid"`
-	Nickname string `json:"nickname"`
-	Password string `json:"password"`
+	Id       int64  `xorm:"notnull pk autoincr INT(11) id" json:"id"`
+	Nickname string `xorm:"null VARCHAR(255) nickname" json:"nickname"`
+	Password string `xorm:"null VARCHAR(255) password" json:"password"`
 }
 
 func (u *User) TableName() string {

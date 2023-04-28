@@ -1,4 +1,4 @@
-package schama
+package schema
 
 import (
 	"about-vaccine/internal/entity"

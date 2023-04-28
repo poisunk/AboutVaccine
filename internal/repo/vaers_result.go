@@ -3,13 +3,14 @@ package repo
 import (
 	"about-vaccine/internal/base/dao"
 	"about-vaccine/internal/entity"
+	"about-vaccine/internal/service/vaers"
 )
 
 type VaersResultRepo struct {
 	DB *dao.DB
 }
 
-func NewVaersResultRepo(db *dao.DB) *VaersResultRepo {
+func NewVaersResultRepo(db *dao.DB) vaers.VaersResultRepo {
 	return &VaersResultRepo{DB: db}
 }
 

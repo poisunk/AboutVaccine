@@ -24,7 +24,7 @@ func (o *OAETermController) GetOaeTermsByLabel(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	// 查询
-	oaeList, total, err := o.service.GetByLabel(label, page, pageSize)
+	oaeList, total, err := o.service.GetBySimilarLabel(label, page, pageSize)
 	handler.HandleResponse(c, err, handler.PagedData{
 		Data:     oaeList,
 		Total:    total,

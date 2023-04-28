@@ -3,17 +3,18 @@ package repo
 import (
 	"about-vaccine/internal/base/dao"
 	"about-vaccine/internal/entity"
+	"about-vaccine/internal/service/vaccine"
 )
 
 type VaccineTypeRepo struct {
 	DB *dao.DB
 }
 
-func NewVaccineTypeRepo(db *dao.DB) *VaccineTypeRepo {
+func NewVaccineTypeRepo(db *dao.DB) vaccine.VaccineTypeRepo {
 	return &VaccineTypeRepo{DB: db}
 }
 
-func (repo *VaccineTypeRepo) GetById(id int64) (*entity.VaccineType, bool, error) {
+func (repo *VaccineTypeRepo) Get(id int64) (*entity.VaccineType, bool, error) {
 	v := &entity.VaccineType{}
 	exist, err := repo.DB.ID(id).Get(v)
 	if err != nil {

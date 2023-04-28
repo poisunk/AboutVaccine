@@ -3,19 +3,20 @@ package repo
 import (
 	"about-vaccine/internal/base/dao"
 	"about-vaccine/internal/entity"
+	"about-vaccine/internal/service/adverse_report"
 )
 
 type AdverseEventRepo struct {
 	DB *dao.DB
 }
 
-func NewAdverseEventRepo(DB *dao.DB) *AdverseEventRepo {
+func NewAdverseEventRepo(DB *dao.DB) adverse_report.AdverseEventRepo {
 	return &AdverseEventRepo{
 		DB: DB,
 	}
 }
 
-func (repo *AdverseEventRepo) GetById(id int64) (*entity.AdverseEvent, bool, error) {
+func (repo *AdverseEventRepo) Get(id int64) (*entity.AdverseEvent, bool, error) {
 	event := &entity.AdverseEvent{}
 	exist, err := repo.DB.ID(id).Get(event)
 	if err != nil {
@@ -59,15 +60,10 @@ func (repo *AdverseEventRepo) Count() (int64, error) {
 	return total, nil
 }
 
-func (repo *AdverseEventRepo) Create(event ...*entity.AdverseEvent) error {
+func (repo *AdverseEventRepo) Create(event *entity.AdverseEvent) error {
 	_, err := repo.DB.Insert(event)
 	return err
 }
-func (repo *AdverseEventRepo) CreateOne(event *entity.AdverseEvent) error {
-	_, err := repo.DB.InsertOne(event)
-	return err
-}
-
 func (repo *AdverseEventRepo) Update(event *entity.AdverseEvent) error {
 	_, err := repo.DB.ID(event.Id).Update(event)
 	return err

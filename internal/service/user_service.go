@@ -1,10 +1,9 @@
 package service
 
 import (
-	"about-vaccine/internal/entity"
 	"about-vaccine/internal/middleware/jwt"
-	"about-vaccine/internal/repo"
-	"about-vaccine/internal/schama"
+	"about-vaccine/internal/schema"
+	"about-vaccine/internal/service/user"
 	"about-vaccine/internal/utile"
 	"errors"
 	"log"
@@ -12,18 +11,20 @@ import (
 )
 
 type UserService struct {
-	userRepo *repo.UserRepo
+	common *user.UserCommon
 }
 
-func NewUserService(repo *repo.UserRepo) *UserService {
-	return &UserService{userRepo: repo}
+func NewUserService(userCommon *user.UserCommon) *UserService {
+	return &UserService{
+		common: userCommon,
+	}
 }
 
-func (s *UserService) Login(username, password string) (*schama.UserClaim, error) {
+func (s *UserService) Login(username, password string) (*schema.UserClaim, error) {
 	if len(username) == 0 || len(password) == 0 {
 		return nil, errors.New("用户名或密码为空")
 	}
-	u, _, err := s.userRepo.GetByName(username)
+	u, _, err := s.common.GetByName(username)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("用户不存在")
@@ -31,45 +32,49 @@ func (s *UserService) Login(username, password string) (*schama.UserClaim, error
 	if s.encodePassword(password) != u.Password {
 		return nil, errors.New("密码错误")
 	}
-	token, err := jwt.GenerateToken(u.Uid, u.Nickname)
+	token, err := jwt.GenerateToken(u.Id, u.Nickname)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("token生成失败")
 	}
-	claim := &schama.UserClaim{
-		Uid:      u.Uid,
-		Nickname: u.Nickname,
-		Token:    token,
+	claim := &schema.UserClaim{
+		UserInfo: schema.UserInfo{
+			Uid:      u.Id,
+			Nickname: u.Nickname,
+		},
+		Token: token,
 	}
 	return claim, nil
 }
 
-func (s *UserService) Register(username, password string) (*schama.UserClaim, error) {
+func (s *UserService) Register(username, password string) (*schema.UserClaim, error) {
 	if len(username) == 0 || len(password) == 0 {
 		return nil, errors.New("用户名或密码为空")
 	}
-	u, has, _ := s.userRepo.GetByName(username)
+	has, _ := s.common.CheckName(username)
 	if has {
 		return nil, errors.New("用户已存在")
 	}
-	u = &entity.User{
+	u := &schema.UserAdd{
 		Nickname: username,
 		Password: s.encodePassword(password),
 	}
-	err := s.userRepo.Create(u)
+	uid, err := s.common.Create(u)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("注册失败")
 	}
-	token, err := jwt.GenerateToken(u.Uid, u.Nickname)
+	token, err := jwt.GenerateToken(uid, u.Nickname)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("token生成失败")
 	}
-	claim := &schama.UserClaim{
-		Uid:      u.Uid,
-		Nickname: u.Nickname,
-		Token:    token,
+	claim := &schema.UserClaim{
+		UserInfo: schema.UserInfo{
+			Uid:      uid,
+			Nickname: u.Nickname,
+		},
+		Token: token,
 	}
 	return claim, nil
 }
@@ -81,7 +86,7 @@ func (s *UserService) Logout(token string) error {
 		return errors.New("无效的token")
 	}
 	uid, _ := strconv.ParseInt(claim.Id, 10, 64)
-	err = s.userRepo.Delete(uid)
+	err = s.common.Delete(uid)
 	if err != nil {
 		log.Println(err.Error())
 		return errors.New("注销失败")
@@ -89,11 +94,15 @@ func (s *UserService) Logout(token string) error {
 	return nil
 }
 
-func (s *UserService) LoginWithToken(token string) (*schama.UserClaim, error) {
+func (s *UserService) LoginWithToken(token string) (*schema.UserClaim, error) {
 	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("无效的token")
+	}
+	has, _ := s.common.CheckName(claim.Audience)
+	if !has {
+		return nil, errors.New("用户不存在")
 	}
 	uid, _ := strconv.ParseInt(claim.Id, 10, 64)
 	newToken, err := jwt.GenerateToken(uid, claim.Audience)
@@ -101,24 +110,21 @@ func (s *UserService) LoginWithToken(token string) (*schama.UserClaim, error) {
 		log.Println(err.Error())
 		return nil, errors.New("token生成失败")
 	}
-	userClaim := &schama.UserClaim{
-		Uid:      uid,
-		Nickname: claim.Audience,
-		Token:    newToken,
+	userClaim := &schema.UserClaim{
+		UserInfo: schema.UserInfo{
+			Uid:      uid,
+			Nickname: claim.Audience,
+		},
+		Token: newToken,
 	}
 	return userClaim, nil
 }
 
-func (s *UserService) SearchUserByName(keyword string, page, pageSize int) ([]*schama.User, int64, error) {
-	u, total, err := s.userRepo.GetBySimilarName(keyword, page, pageSize)
+func (s *UserService) SearchUserByName(keyword string, page, pageSize int) ([]*schema.UserInfo, int64, error) {
+	list, total, err := s.common.GetListBySimilarName(keyword, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, 0, errors.New("查询失败")
-	}
-	list := make([]*schama.User, len(u))
-	for i, v := range u {
-		list[i] = &schama.User{}
-		list[i].GetFormEntity(v)
 	}
 	return list, total, nil
 }

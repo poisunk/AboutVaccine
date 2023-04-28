@@ -1,11 +1,6 @@
-package schama
+package schema
 
-import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/utile"
-)
-
-type Vaccine struct {
+type VaccineInfo struct {
 	Id                int64  `json:"id"`
 	Type              string `json:"type"`
 	RegisterNumber    string `json:"registerNumber"`
@@ -25,15 +20,13 @@ type Vaccine struct {
 	DrugCodeNote      string `json:"drugCodeNote"`
 }
 
-type VaccineType struct {
+type VaccineSimpleInfo struct {
 	Id   int64  `json:"id"`
 	Type string `json:"type"`
+	Name string `json:"name"`
 }
 
-func (v *Vaccine) GetFormEntity(e *entity.Vaccine) {
-	_ = utile.StructConv(e, v)
-}
-
-func (v *VaccineType) GetFormEntity(e *entity.VaccineType) {
-	_ = utile.StructConv(e, v)
+type VaccineTypeInfo struct {
+	Id   int64  `json:"id"`
+	Type string `json:"type"`
 }

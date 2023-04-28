@@ -2,23 +2,23 @@ package service
 
 import (
 	"about-vaccine/internal/entity"
-	"about-vaccine/internal/repo"
+	"about-vaccine/internal/service/oae"
 	"errors"
 	"log"
 )
 
 type OaeTermService struct {
-	OaeTermRepo *repo.OAETermRepo
+	common *oae.OAETermCommon
 }
 
-func NewOaeTermService(oaeTermRepo *repo.OAETermRepo) *OaeTermService {
+func NewOaeTermService(common *oae.OAETermCommon) *OaeTermService {
 	return &OaeTermService{
-		OaeTermRepo: oaeTermRepo,
+		common: common,
 	}
 }
 
 func (s *OaeTermService) GetByIRI(iri string) (*entity.OAETerm, error) {
-	o, _, err := s.OaeTermRepo.GetByIRI(iri)
+	o, _, err := s.common.GetByIRI(iri)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("获取OAETerm失败")
@@ -26,8 +26,8 @@ func (s *OaeTermService) GetByIRI(iri string) (*entity.OAETerm, error) {
 	return o, nil
 }
 
-func (s *OaeTermService) GetByLabel(label string, page, pageSize int) ([]*entity.OAETerm, int64, error) {
-	o, total, err := s.OaeTermRepo.GetByLabel(label, page, pageSize)
+func (s *OaeTermService) GetBySimilarLabel(label string, page, pageSize int) ([]*entity.OAETerm, int64, error) {
+	o, total, err := s.common.GetBySimilarLabel(label, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, 0, errors.New("获取OAETerm失败")

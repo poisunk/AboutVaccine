@@ -2,7 +2,7 @@ package handler
 
 import (
 	"about-vaccine/internal/config"
-	"about-vaccine/internal/schama"
+	"about-vaccine/internal/schema"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -43,7 +43,7 @@ func HandleResponse(c *gin.Context, err error, data interface{}) {
 	})
 }
 
-func HandleClaimResponse(c *gin.Context, err error, t string, claim *schama.UserClaim) {
+func HandleClaimResponse(c *gin.Context, err error, t string, claim *schema.UserClaim) {
 	if t == "cookie" {
 		if err == nil && claim != nil {
 			c.SetCookie(config.UserClaimCookie, claim.Token, int(time.Hour.Milliseconds()*24),

@@ -3,13 +3,14 @@ package repo
 import (
 	"about-vaccine/internal/base/dao"
 	"about-vaccine/internal/entity"
+	"about-vaccine/internal/service/adverse_report"
 )
 
 type AdverseSymptomRepo struct {
 	DB *dao.DB
 }
 
-func NewAdverseSymptomRepo(DB *dao.DB) *AdverseSymptomRepo {
+func NewAdverseSymptomRepo(DB *dao.DB) adverse_report.AdverseSymptomRepo {
 	return &AdverseSymptomRepo{
 		DB: DB,
 	}
@@ -24,7 +25,7 @@ func (repo *AdverseSymptomRepo) GetById(id int64) (*entity.AdverseSymptom, bool,
 	return symptom, exist, nil
 }
 
-func (repo *AdverseSymptomRepo) GetByEventId(eventId int64) ([]*entity.AdverseSymptom, error) {
+func (repo *AdverseSymptomRepo) GetListByEventId(eventId int64) ([]*entity.AdverseSymptom, error) {
 	var list []*entity.AdverseSymptom
 	err := repo.DB.Where("event_id = ?", eventId).Find(&list)
 	if err != nil {
@@ -41,7 +42,7 @@ func (repo *AdverseSymptomRepo) Count() (int64, error) {
 	return total, nil
 }
 
-func (repo *AdverseSymptomRepo) Create(symptom ...*entity.AdverseSymptom) error {
+func (repo *AdverseSymptomRepo) CreateList(symptom []*entity.AdverseSymptom) error {
 	_, err := repo.DB.Insert(symptom)
 	return err
 }

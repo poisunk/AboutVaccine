@@ -2,7 +2,7 @@ package controller
 
 import (
 	"about-vaccine/internal/base/handler"
-	"about-vaccine/internal/schama"
+	"about-vaccine/internal/schema"
 	"about-vaccine/internal/service"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -10,36 +10,32 @@ import (
 	"strconv"
 )
 
-type AdverseEventController struct {
-	AdverseEventService *service.AdverseEventService
+type AdverseReportController struct {
+	AdverseEventService *service.AdverseReportService
 }
 
-func NewAdverseEventController(eventService *service.AdverseEventService) *AdverseEventController {
-	return &AdverseEventController{
+func NewAdverseEventController(eventService *service.AdverseReportService) *AdverseReportController {
+	return &AdverseReportController{
 		AdverseEventService: eventService,
 	}
 }
 
-func (a *AdverseEventController) CreateAdverseEvent(c *gin.Context) {
+func (a *AdverseReportController) CreateAdverseEvent(c *gin.Context) {
 	// 获取参数
-	var adverseEvent = new(schama.AdverseEvent)
+	var adverseEvent = new(schema.AdverseEventAdd)
 	err := c.ShouldBindJSON(adverseEvent)
 	if err != nil {
 		log.Println(err.Error())
 		handler.HandleResponse(c, errors.New("json格式错误"), nil)
 		return
 	}
-	uid := c.GetString("userId")
-	if len(uid) != 0 {
-		uid, _ := strconv.ParseInt(uid, 10, 64)
-		adverseEvent.Uid = &uid
-	}
+	token := c.Query("token")
 	// 创建服务
-	err = a.AdverseEventService.Create(adverseEvent)
+	err = a.AdverseEventService.Create(adverseEvent, token)
 	handler.HandleResponse(c, err, nil)
 }
 
-func (a *AdverseEventController) GetAdverseEvent(c *gin.Context) {
+func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 	// 获取page, pageSize
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
@@ -76,7 +72,7 @@ func (a *AdverseEventController) GetAdverseEvent(c *gin.Context) {
 	})
 }
 
-func (a *AdverseEventController) DeleteAdverseEvent(c *gin.Context) {
+func (a *AdverseReportController) DeleteAdverseEvent(c *gin.Context) {
 	// 获取id
 	s := c.Query("id")
 	if len(s) == 0 {

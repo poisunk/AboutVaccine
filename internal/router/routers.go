@@ -12,7 +12,7 @@ type APIRouter struct {
 	VaersController        *controller.VaersController
 	VaccineController      *controller.VaccineController
 	OAETermController      *controller.OAETermController
-	AdverseEventController *controller.AdverseEventController
+	AdverseEventController *controller.AdverseReportController
 }
 
 func NewAPIRouter(
@@ -20,7 +20,7 @@ func NewAPIRouter(
 	vaersController *controller.VaersController,
 	vaccineController *controller.VaccineController,
 	oaeTermController *controller.OAETermController,
-	adverseEventController *controller.AdverseEventController,
+	adverseEventController *controller.AdverseReportController,
 ) *APIRouter {
 	return &APIRouter{
 		UserController:         userController,

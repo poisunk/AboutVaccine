@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"about-vaccine/internal/config"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -8,10 +9,6 @@ import (
 type DB struct {
 	*xorm.Engine
 }
-
-const (
-	DSN = "root:zxc?12345@tcp(sh-cynosdbmysql-grp-o5q6mlei.sql.tencentcdb.com:22106)/vaccine?parseTime=True"
-)
 
 func NewDB(engine *xorm.Engine) *DB {
 	return &DB{engine}
@@ -22,7 +19,7 @@ func (db *DB) Close() error {
 }
 
 func NewEngine() (*xorm.Engine, error) {
-	engine, err := xorm.NewEngine("mysql", DSN)
+	engine, err := xorm.NewEngine("mysql", config.DSN)
 	if err != nil {
 		return nil, err
 	}

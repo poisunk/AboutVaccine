@@ -12,6 +12,11 @@ import (
 	"about-vaccine/internal/repo"
 	"about-vaccine/internal/router"
 	"about-vaccine/internal/service"
+	"about-vaccine/internal/service/adverse_report"
+	"about-vaccine/internal/service/oae"
+	"about-vaccine/internal/service/user"
+	"about-vaccine/internal/service/vaccine"
+	"about-vaccine/internal/service/vaers"
 )
 
 // Injectors from wire.go:
@@ -23,28 +28,32 @@ func InitApplication() (*router.APIRouter, error) {
 	}
 	db := dao.NewDB(engine)
 	userRepo := repo.NewUserRepo(db)
-	userService := service.NewUserService(userRepo)
+	userCommon := user.NewUserCommon(userRepo)
+	userService := service.NewUserService(userCommon)
 	userController := controller.NewUserController(userService)
-	vaersRepo := repo.NewVaersRepo(db)
 	vaersResultRepo := repo.NewVaersResultRepo(db)
-	vaersSymptomRepo := repo.NewVaersSymptomRepo(db)
-	vaersSymptomTermRepo := repo.NewVaersSymptomTermRepo(db)
-	vaersVaxRepo := repo.NewVaersVaxRepo(db)
+	vaersResultCommon := vaers.NewVaersResultCommon(vaersResultRepo)
 	vaersVaxTermRepo := repo.NewVaersVaxTermRepo(db)
-	vaersService := service.NewVaersService(vaersRepo, vaersResultRepo, vaersSymptomRepo, vaersSymptomTermRepo, vaersVaxRepo, vaersVaxTermRepo)
+	vaersVaxCommon := vaers.NewVaersVaxCommon(vaersVaxTermRepo)
+	vaersSymptomTermRepo := repo.NewVaersSymptomTermRepo(db)
+	vaersSymptomCommon := vaers.NewVaersSymptomCommon(vaersSymptomTermRepo)
+	vaersService := service.NewVaersService(vaersResultCommon, vaersVaxCommon, vaersSymptomCommon)
 	vaersController := controller.NewVaersController(vaersService)
 	vaccineRepo := repo.NewVaccineRepo(db)
 	vaccineTypeRepo := repo.NewVaccineTypeRepo(db)
-	vaccineService := service.NewVaccineService(vaccineRepo, vaccineTypeRepo)
+	vaccineCommon := vaccine.NewVaccineCommon(vaccineRepo, vaccineTypeRepo)
+	vaccineService := service.NewVaccineService(vaccineCommon)
 	vaccineController := controller.NewVaccineController(vaccineService)
 	oaeTermRepo := repo.NewOAETermRepo(db)
-	oaeTermService := service.NewOaeTermService(oaeTermRepo)
+	oaeTermCommon := oae.NewOAETermCommon(oaeTermRepo)
+	oaeTermService := service.NewOaeTermService(oaeTermCommon)
 	oaeTermController := controller.NewOAETermController(oaeTermService)
 	adverseEventRepo := repo.NewAdverseEventRepo(db)
 	adverseSymptomRepo := repo.NewAdverseSymptomRepo(db)
 	adverseVaccineRepo := repo.NewAdverseVaccineRepo(db)
-	adverseEventService := service.NewAdverseEventService(adverseEventRepo, adverseSymptomRepo, adverseVaccineRepo, vaccineService)
-	adverseEventController := controller.NewAdverseEventController(adverseEventService)
-	apiRouter := router.NewAPIRouter(userController, vaersController, vaccineController, oaeTermController, adverseEventController)
+	adverseReportCommon := adverse_report.NewAdverseEventCommon(adverseEventRepo, adverseSymptomRepo, adverseVaccineRepo, vaccineCommon)
+	adverseReportService := service.NewAdverseReportService(adverseReportCommon, vaccineService)
+	adverseReportController := controller.NewAdverseEventController(adverseReportService)
+	apiRouter := router.NewAPIRouter(userController, vaersController, vaccineController, oaeTermController, adverseReportController)
 	return apiRouter, nil
 }

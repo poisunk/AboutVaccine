@@ -1,115 +1,60 @@
 package service
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/repo"
-	"about-vaccine/internal/schama"
+	"about-vaccine/internal/schema"
+	"about-vaccine/internal/service/vaccine"
 	"errors"
 	"log"
 )
 
 type VaccineService struct {
-	VaccineRepo *repo.VaccineRepo
-	TypeRepo    *repo.VaccineTypeRepo
+	vaccineCommon *vaccine.VaccineCommon
 }
 
 func NewVaccineService(
-	vaccineRepo *repo.VaccineRepo,
-	typeRepo *repo.VaccineTypeRepo,
+	vaccineCommon *vaccine.VaccineCommon,
 ) *VaccineService {
 	return &VaccineService{
-		VaccineRepo: vaccineRepo,
-		TypeRepo:    typeRepo,
+		vaccineCommon: vaccineCommon,
 	}
 }
 
-func (s *VaccineService) Get(id int64) (*schama.Vaccine, error) {
-	v, has, err := s.VaccineRepo.GetByID(id)
+func (s *VaccineService) Get(id int64) (*schema.VaccineInfo, error) {
+	v, has, err := s.vaccineCommon.Get(id)
 	if err != nil || !has {
 		return nil, errors.New("疫苗不存在")
 	}
-	if len(v.Type) == 0 {
-		err := s.setupVaccineType(v)
-		if err != nil {
-			return nil, err
-		}
-	}
-	vaccine := &schama.Vaccine{}
-	vaccine.GetFormEntity(v)
-	return vaccine, nil
+	return v, nil
 }
 
-func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*schama.Vaccine, int64, error) {
-	vs, total, err := s.VaccineRepo.GetListByProductName(keyword, page, pageSize)
+func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
+	vs, total, err := s.vaccineCommon.GetList(keyword, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, 0, errors.New("获取Vaccine失败")
 	}
-	var list []*schama.Vaccine
-	for _, v := range vs {
-		if len(v.Type) == 0 {
-			err := s.setupVaccineType(v)
-			if err != nil {
-				return nil, 0, err
-			}
-		}
-		vaccine := &schama.Vaccine{}
-		vaccine.GetFormEntity(v)
-		list = append(list, vaccine)
-	}
-	return list, total, nil
+	return vs, total, nil
 }
 
-func (s *VaccineService) GetByType(typeStr string, page, pageSize int) ([]*schama.Vaccine, int64, error) {
-	tid, has, err := s.TypeRepo.GetIdByType(typeStr)
+func (s *VaccineService) GetByType(typeStr string, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
+	tid, has, err := s.vaccineCommon.GetTypeIdByType(typeStr)
 	if err != nil || has == false {
 		log.Println(err.Error())
 		return nil, 0, errors.New("type不存在")
 	}
-	vaccineList, total, err := s.VaccineRepo.GetListByType(tid, page, pageSize)
+	vaccineList, total, err := s.vaccineCommon.GetListByType(tid, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, 0, errors.New("获取VaccineType失败")
 	}
-	var list []*schama.Vaccine
-	for _, v := range vaccineList {
-		if len(v.Type) == 0 {
-			err := s.setupVaccineType(v)
-			if err != nil {
-				return nil, 0, err
-			}
-		}
-		vaccine := &schama.Vaccine{}
-		vaccine.GetFormEntity(v)
-		list = append(list, vaccine)
-	}
-	return list, total, nil
+	return vaccineList, total, nil
 }
 
-func (s *VaccineService) GetTypeList(page, pageSize int) ([]*schama.VaccineType, int64, error) {
-	t, total, err := s.TypeRepo.GetList(page, pageSize)
+func (s *VaccineService) GetTypeList(page, pageSize int) ([]*schema.VaccineTypeInfo, int64, error) {
+	list, total, err := s.vaccineCommon.GetTypeList(page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, 0, errors.New("获取VaccineType失败")
 	}
-	var list []*schama.VaccineType
-	for _, v := range t {
-		tp := &schama.VaccineType{}
-		tp.GetFormEntity(v)
-		list = append(list, tp)
-	}
 	return list, total, nil
-}
-
-func (s *VaccineService) setupVaccineType(v *entity.Vaccine) error {
-	t, _, err := s.TypeRepo.GetById(v.Tid)
-	if err != nil {
-		log.Println(err.Error())
-		return errors.New("获取VaccineType失败")
-	}
-	v.Type = t.Type
-	go func() {
-		_ = s.VaccineRepo.Update(v)
-	}()
-	return nil
 }
