@@ -51,7 +51,7 @@ func InitApplication() (*router.APIRouter, error) {
 	adverseEventRepo := repo.NewAdverseEventRepo(db)
 	adverseSymptomRepo := repo.NewAdverseSymptomRepo(db)
 	adverseVaccineRepo := repo.NewAdverseVaccineRepo(db)
-	adverseReportCommon := adverse_report.NewAdverseEventCommon(adverseEventRepo, adverseSymptomRepo, adverseVaccineRepo, vaccineCommon)
+	adverseReportCommon := adverse_report.NewAdverseEventCommon(adverseEventRepo, adverseSymptomRepo, adverseVaccineRepo, vaccineCommon, userCommon)
 	adverseReportService := service.NewAdverseReportService(adverseReportCommon, vaccineService)
 	adverseReportController := controller.NewAdverseEventController(adverseReportService)
 	apiRouter := router.NewAPIRouter(userController, vaersController, vaccineController, oaeTermController, adverseReportController)

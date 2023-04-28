@@ -3,6 +3,7 @@ package adverse_report
 import (
 	"about-vaccine/internal/entity"
 	"about-vaccine/internal/schema"
+	"about-vaccine/internal/service/user"
 	"about-vaccine/internal/service/vaccine"
 	"sync"
 )
@@ -30,6 +31,7 @@ type AdverseReportCommon struct {
 	adverseSymptomRepo AdverseSymptomRepo
 	adverseVaccineRepo AdverseVaccineRepo
 	vaccineCommon      *vaccine.VaccineCommon
+	userCommon         *user.UserCommon
 }
 
 func NewAdverseEventCommon(
@@ -37,12 +39,14 @@ func NewAdverseEventCommon(
 	adverseSymptomRepo AdverseSymptomRepo,
 	adverseVaccineRepo AdverseVaccineRepo,
 	vaccineCommon *vaccine.VaccineCommon,
+	userCommon *user.UserCommon,
 ) *AdverseReportCommon {
 	return &AdverseReportCommon{
 		adverseEventRepo:   adverseEventRepo,
 		adverseSymptomRepo: adverseSymptomRepo,
 		adverseVaccineRepo: adverseVaccineRepo,
 		vaccineCommon:      vaccineCommon,
+		userCommon:         userCommon,
 	}
 }
 
@@ -52,18 +56,9 @@ func (a *AdverseReportCommon) Get(id int64) (*schema.AdverseEventInfo, bool, err
 	if err != nil {
 		return nil, has, err
 	}
-	vaccineList, err := a.GetVaccineListByEventId(id)
-	if err != nil {
-		return nil, has, err
-	}
-
-	symptomList, err := a.GetSymptomListByEventId(id)
-	if err != nil {
-		return nil, has, err
-	}
 	eventInfo := a.FormatEventInfo(event)
-	eventInfo.VaccineList = vaccineList
-	eventInfo.SymptomList = symptomList
+	a.LoadVaccineAndSymptomList(eventInfo)
+	a.LoadUserName(eventInfo, event.Uid)
 	return eventInfo, has, nil
 }
 
@@ -80,6 +75,7 @@ func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEven
 		go func() {
 			defer wg.Done()
 			a.LoadVaccineAndSymptomList(eventInfo)
+			a.LoadUserName(eventInfo, event.Uid)
 		}()
 		eventInfos = append(eventInfos, eventInfo)
 	}
@@ -116,18 +112,24 @@ func (a *AdverseReportCommon) GetVaccineListByEventId(id int64) ([]*schema.Adver
 		return nil, err
 	}
 	vaccineList := make([]*schema.AdverseVaccineInfo, 0)
+	var wg sync.WaitGroup
 	for _, v := range vaccineEntitys {
-		vaccineInfo := a.FormatVaccineInfo(v, func(info *schema.AdverseVaccineInfo) {
-			example, _, err := a.vaccineCommon.Get(v.VaccineId)
-			if err != nil {
-				return
-			}
-			info.Type = example.Type
-			info.Name = example.ProductName
-			info.Manufacturer = example.ProductionCompany
-		})
-		vaccineList = append(vaccineList, vaccineInfo)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			vaccineInfo := a.FormatVaccineInfo(v, func(info *schema.AdverseVaccineInfo) {
+				example, _, err := a.vaccineCommon.Get(v.VaccineId)
+				if err != nil {
+					return
+				}
+				info.Type = example.Type
+				info.Name = example.ProductName
+				info.Manufacturer = example.ProductionCompany
+			})
+			vaccineList = append(vaccineList, vaccineInfo)
+		}()
 	}
+	wg.Wait()
 	return vaccineList, nil
 }
 
@@ -157,6 +159,7 @@ func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*sc
 		go func() {
 			defer wg.Done()
 			a.LoadVaccineAndSymptomList(eventInfo)
+			a.LoadUserName(eventInfo, event.Uid)
 		}()
 		eventInfos = append(eventInfos, eventInfo)
 	}
@@ -176,6 +179,18 @@ func (a *AdverseReportCommon) LoadVaccineAndSymptomList(event *schema.AdverseEve
 	event.VaccineList = vaccineList
 	event.SymptomList = symptomList
 	return nil
+}
+
+func (a *AdverseReportCommon) LoadUserName(event *schema.AdverseEventInfo, uid *int64) {
+	if uid == nil {
+		return
+	}
+	name, err := a.userCommon.GetUserNameByUid(*uid)
+	if err != nil {
+		return
+	}
+	event.UserName = name
+	return
 }
 
 func (a *AdverseReportCommon) Delete(id int64) error {

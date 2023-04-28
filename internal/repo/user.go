@@ -37,7 +37,7 @@ func (repo *UserRepo) GetListBySimilarName(name string, page, pageSize int) ([]*
 
 func (repo *UserRepo) GetUserName(uid int64) (string, error) {
 	var u entity.User
-	_, err := repo.DB.Where("uid = ?", uid).Cols("nickname").Get(&u)
+	_, err := repo.DB.Where("id = ?", uid).Cols("nickname").Get(&u)
 	if err != nil {
 		return "", err
 	}
@@ -50,6 +50,6 @@ func (repo *UserRepo) Create(user *entity.User) error {
 }
 
 func (repo *UserRepo) Delete(uid int64) error {
-	_, err := repo.DB.Where("uid = ?", uid).Delete(&entity.User{})
+	_, err := repo.DB.Where("id = ?", uid).Delete(&entity.User{})
 	return err
 }
