@@ -37,7 +37,7 @@ func (vc *VaccineCommon) FormatVaccineSimpleInfo(entity *entity.Vaccine) *schema
 	return &vaccine
 }
 
-func (vc *VaccineCommon) FormatVaccineTypeInfo(entity *entity.VaccineType) *schema.VaccineTypeInfo {
+func (vc *VaccineTypeCommon) FormatVaccineTypeInfo(entity *entity.VaccineType) *schema.VaccineTypeInfo {
 	vaccine := schema.VaccineTypeInfo{
 		Id:   entity.Id,
 		Type: entity.Type,

@@ -25,8 +25,3 @@ type VaccineSimpleInfo struct {
 	Type string `json:"type"`
 	Name string `json:"name"`
 }
-
-type VaccineTypeInfo struct {
-	Id   int64  `json:"id"`
-	Type string `json:"type"`
-}

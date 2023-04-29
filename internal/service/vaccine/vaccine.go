@@ -13,21 +13,15 @@ type VaccineRepo interface {
 	Update(v *entity.Vaccine) error
 }
 
-type VaccineTypeRepo interface {
-	Get(id int64) (*entity.VaccineType, bool, error)
-	GetList(page, pageSize int) ([]*entity.VaccineType, int64, error)
-	GetIdByType(tp string) (int64, bool, error)
-}
-
 type VaccineCommon struct {
-	vaccineRepo     VaccineRepo
-	vaccineTypeRepo VaccineTypeRepo
+	vaccineRepo       VaccineRepo
+	vaccineTypeCommon VaccineTypeCommon
 }
 
-func NewVaccineCommon(vaccineRepo VaccineRepo, vaccineTypeRepo VaccineTypeRepo) *VaccineCommon {
+func NewVaccineCommon(vaccineRepo VaccineRepo, vaccineTypeCommon VaccineTypeCommon) *VaccineCommon {
 	return &VaccineCommon{
-		vaccineRepo:     vaccineRepo,
-		vaccineTypeRepo: vaccineTypeRepo,
+		vaccineRepo:       vaccineRepo,
+		vaccineTypeCommon: vaccineTypeCommon,
 	}
 }
 
@@ -85,18 +79,6 @@ func (vc *VaccineCommon) GetSimpleListBySimilarName(keyword string, page, pageSi
 	return list, total, nil
 }
 
-func (vc *VaccineCommon) GetTypeList(page, pageSize int) ([]*schema.VaccineTypeInfo, int64, error) {
-	entitys, total, err := vc.vaccineTypeRepo.GetList(page, pageSize)
-	if err != nil {
-		return nil, total, err
-	}
-	list := make([]*schema.VaccineTypeInfo, 0, len(entitys))
-	for _, v := range entitys {
-		list = append(list, vc.FormatVaccineTypeInfo(v))
-	}
-	return list, total, nil
-}
-
 func (vc *VaccineCommon) Get(id int64) (*schema.VaccineInfo, bool, error) {
 	v, ok, err := vc.vaccineRepo.Get(id)
 	if err != nil {
@@ -105,16 +87,12 @@ func (vc *VaccineCommon) Get(id int64) (*schema.VaccineInfo, bool, error) {
 	return vc.FormatVaccineInfo(v), ok, nil
 }
 
-func (vc *VaccineCommon) GetTypeIdByType(tp string) (int64, bool, error) {
-	return vc.vaccineTypeRepo.GetIdByType(tp)
-}
-
 func (vc *VaccineCommon) setupVaccineType(v *entity.Vaccine) error {
-	t, _, err := vc.vaccineTypeRepo.Get(v.Tid)
-	if err != nil {
+	t, has, err := vc.vaccineTypeCommon.GetTypeById(v.Tid)
+	if err != nil || !has {
 		return err
 	}
-	v.Type = t.Type
+	v.Type = t
 	go func() {
 		_ = vc.vaccineRepo.Update(v)
 	}()

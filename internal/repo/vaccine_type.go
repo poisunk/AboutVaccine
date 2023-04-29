@@ -25,7 +25,7 @@ func (repo *VaccineTypeRepo) Get(id int64) (*entity.VaccineType, bool, error) {
 
 func (repo *VaccineTypeRepo) GetList(page, pageSize int) ([]*entity.VaccineType, int64, error) {
 	typeList := make([]*entity.VaccineType, 0)
-	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).FindAndCount(&typeList)
+	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).Cols("id", "type").FindAndCount(&typeList)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -41,10 +41,11 @@ func (repo *VaccineTypeRepo) GetIdByType(typeStr string) (int64, bool, error) {
 	return id, has, nil
 }
 
-func (repo *VaccineTypeRepo) Count() (total int64, err error) {
-	total, err = repo.DB.Count(&entity.VaccineType{})
+func (repo *VaccineTypeRepo) GetTypeById(id int64) (string, bool, error) {
+	var typeStr string
+	has, err := repo.DB.Table(&entity.VaccineType{}).Where("id = ?", id).Cols("type").Get(&typeStr)
 	if err != nil {
-		return -1, err
+		return "", false, err
 	}
-	return total, nil
+	return typeStr, has, nil
 }
