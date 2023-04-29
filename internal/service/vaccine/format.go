@@ -44,3 +44,16 @@ func (vc *VaccineTypeCommon) FormatVaccineTypeInfo(entity *entity.VaccineType) *
 	}
 	return &vaccine
 }
+
+func (vc *VaccineTypeCommon) FormatVaccineTypeDetailInfo(entity *entity.VaccineType) *schema.VaccineTypeDetailInfo {
+	vaccine := schema.VaccineTypeDetailInfo{
+		Id:                  entity.Id,
+		Type:                entity.Type,
+		DiseaseIntroduction: entity.DiseaseIntroduction,
+		PreventiveMeasures:  entity.PreventiveMeasures,
+		Target:              entity.Target,
+		VaccinationBan:      entity.VaccinationBan,
+		AdverseEvent:        entity.AdverseEvent,
+	}
+	return &vaccine
+}

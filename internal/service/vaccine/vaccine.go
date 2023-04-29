@@ -15,10 +15,10 @@ type VaccineRepo interface {
 
 type VaccineCommon struct {
 	vaccineRepo       VaccineRepo
-	vaccineTypeCommon VaccineTypeCommon
+	vaccineTypeCommon *VaccineTypeCommon
 }
 
-func NewVaccineCommon(vaccineRepo VaccineRepo, vaccineTypeCommon VaccineTypeCommon) *VaccineCommon {
+func NewVaccineCommon(vaccineRepo VaccineRepo, vaccineTypeCommon *VaccineTypeCommon) *VaccineCommon {
 	return &VaccineCommon{
 		vaccineRepo:       vaccineRepo,
 		vaccineTypeCommon: vaccineTypeCommon,

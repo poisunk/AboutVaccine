@@ -45,7 +45,13 @@ func (v *VaccineController) GetVaccineList(c *gin.Context) {
 	})
 }
 
-func (v *VaccineController) GetVaccineTypeList(c *gin.Context) {
+func (v *VaccineController) GetVaccineType(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Query("id"), 10, 64)
+	if err == nil {
+		v, err := v.service.GetTypeDetailInfo(id)
+		handler.HandleResponse(c, err, v)
+		return
+	}
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	list, total, err := v.service.GetTypeList(page, pageSize)

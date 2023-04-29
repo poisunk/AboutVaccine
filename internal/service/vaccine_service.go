@@ -61,3 +61,11 @@ func (s *VaccineService) GetTypeList(page, pageSize int) ([]*schema.VaccineTypeI
 	}
 	return list, total, nil
 }
+
+func (s *VaccineService) GetTypeDetailInfo(id int64) (*schema.VaccineTypeDetailInfo, error) {
+	v, has, err := s.vaccineTypeCommon.Get(id)
+	if err != nil || !has {
+		return nil, errors.New("type不存在")
+	}
+	return v, nil
+}
