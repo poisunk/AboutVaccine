@@ -32,11 +32,3 @@ func (repo *OAETermRepo) GetBySimilarLabel(label string, page, pageSize int) ([]
 	}
 	return oaeList, total, nil
 }
-
-func (repo *OAETermRepo) CountByLabel(label string) (int64, error) {
-	total, err := repo.DB.Where("TermLabel LIKE ?", "%"+label+"%").Count()
-	if err != nil {
-		return 0, err
-	}
-	return total, nil
-}

@@ -52,20 +52,8 @@ func (repo *AdverseEventRepo) GetUid(id int64) (int64, bool, error) {
 	return uid, has, nil
 }
 
-func (repo *AdverseEventRepo) Count() (int64, error) {
-	total, err := repo.DB.Count(&entity.AdverseEvent{})
-	if err != nil {
-		return 0, err
-	}
-	return total, nil
-}
-
 func (repo *AdverseEventRepo) Create(event *entity.AdverseEvent) error {
 	_, err := repo.DB.Insert(event)
-	return err
-}
-func (repo *AdverseEventRepo) Update(event *entity.AdverseEvent) error {
-	_, err := repo.DB.ID(event.Id).Update(event)
 	return err
 }
 
