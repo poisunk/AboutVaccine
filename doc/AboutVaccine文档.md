@@ -38,7 +38,7 @@ http://43.140.194.248/api
     "rapporteurAddress": "llll",// 报告单位
     "vaccineList": [// 疫苗接种情况
         {
-            "id": 2,// 疫苗id
+            "vaccineId": 2,// 疫苗id
             "vaccinateDate": null,// 接种日期
             "dose": "1",// 接种剂次
             "route": "",// 接种途径
