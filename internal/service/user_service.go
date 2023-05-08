@@ -38,11 +38,9 @@ func (s *UserService) Login(username, password string) (*schema.UserClaim, error
 		return nil, errors.New("token生成失败")
 	}
 	claim := &schema.UserClaim{
-		UserInfo: schema.UserInfo{
-			Uid:      u.Id,
-			Nickname: u.Nickname,
-		},
-		Token: token,
+		Uid:      u.Id,
+		Nickname: u.Nickname,
+		Token:    token,
 	}
 	return claim, nil
 }
@@ -70,11 +68,9 @@ func (s *UserService) Register(username, password string) (*schema.UserClaim, er
 		return nil, errors.New("token生成失败")
 	}
 	claim := &schema.UserClaim{
-		UserInfo: schema.UserInfo{
-			Uid:      uid,
-			Nickname: u.Nickname,
-		},
-		Token: token,
+		Uid:      uid,
+		Nickname: u.Nickname,
+		Token:    token,
 	}
 	return claim, nil
 }
@@ -111,11 +107,9 @@ func (s *UserService) LoginWithToken(token string) (*schema.UserClaim, error) {
 		return nil, errors.New("token生成失败")
 	}
 	userClaim := &schema.UserClaim{
-		UserInfo: schema.UserInfo{
-			Uid:      uid,
-			Nickname: claim.Audience,
-		},
-		Token: newToken,
+		Uid:      uid,
+		Nickname: claim.Audience,
+		Token:    newToken,
 	}
 	return userClaim, nil
 }

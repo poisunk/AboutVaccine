@@ -6,7 +6,8 @@ type UserInfo struct {
 }
 
 type UserClaim struct {
-	UserInfo `json:"user_info"`
+	Uid      int64  `json:"uid"`
+	Nickname string `json:"nickname"`
 	Token    string `json:"token"`
 }
 
