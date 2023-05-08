@@ -43,6 +43,15 @@ func (repo *AdverseEventRepo) GetListByUid(uid int64, page, pageSize int) ([]*en
 	return list, total, nil
 }
 
+func (repo *AdverseEventRepo) GetListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
+	var list []*entity.AdverseEvent
+	total, err := repo.DB.Where("description like ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	if err != nil {
+		return nil, 0, err
+	}
+	return list, total, nil
+}
+
 func (repo *AdverseEventRepo) GetUid(id int64) (int64, bool, error) {
 	var uid int64
 	has, err := repo.DB.Table(&entity.AdverseEvent{}).ID(id).Cols("uid").Get(&uid)

@@ -59,6 +59,15 @@ func (a *AdverseReportService) GetList(page, pageSize int) ([]*schema.AdverseEve
 	return el, total, nil
 }
 
+func (a *AdverseReportService) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
+	el, total, err := a.common.GetListByKeyword(keyword, page, pageSize)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, 0, errors.New("获取Event列表失败")
+	}
+	return el, total, nil
+}
+
 func (a *AdverseReportService) GetListByUid(uid int64, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
 	el, total, err := a.common.GetListByUid(uid, page, pageSize)
 	if err != nil {

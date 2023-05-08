@@ -49,11 +49,10 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 		return
 	}
 	// 2. 获取uid，是否通过uid查询
-	s = c.Query("uid")
+	s = c.Query("keyword")
 	if len(s) != 0 {
-		// 根据uid查询
-		uid, _ := strconv.ParseInt(s, 10, 64)
-		adverseEvent, total, err := a.AdverseEventService.GetListByUid(uid, page, pageSize)
+		//// 根据keyword查询
+		adverseEvent, total, err := a.AdverseEventService.GetListByKeyword(s, page, pageSize)
 		handler.HandleResponse(c, err, handler.PagedData{
 			Total:    total,
 			Page:     page,

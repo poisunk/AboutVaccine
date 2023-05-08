@@ -13,6 +13,7 @@ type AdverseEventRepo interface {
 	Get(id int64) (*entity.AdverseEvent, bool, error)
 	GetList(page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
 }
@@ -65,6 +66,27 @@ func (a *AdverseReportCommon) Get(id int64) (*schema.AdverseEventInfo, bool, err
 
 func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
 	events, total, err := a.adverseEventRepo.GetList(page, pageSize)
+	if err != nil {
+		return nil, total, err
+	}
+	eventInfos := make([]*schema.AdverseEventInfo, 0)
+	var wg sync.WaitGroup
+	for _, event := range events {
+		eventInfo := a.FormatEventInfo(event)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			a.LoadVaccineAndSymptomList(eventInfo)
+			a.LoadUserName(eventInfo, event.Uid)
+		}()
+		eventInfos = append(eventInfos, eventInfo)
+	}
+	wg.Wait()
+	return eventInfos, total, nil
+}
+
+func (a *AdverseReportCommon) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
+	events, total, err := a.adverseEventRepo.GetListByKeyword(keyword, page, pageSize)
 	if err != nil {
 		return nil, total, err
 	}

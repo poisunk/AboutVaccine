@@ -18,7 +18,6 @@ func NewAdverseVaccineRepo(DB *dao.DB) adverse_report.AdverseVaccineRepo {
 
 func (repo *AdverseVaccineRepo) GetListByEventId(eventId int64) ([]*entity.AdverseVaccine, error) {
 	var list []*entity.AdverseVaccine
-	//TODO
 	err := repo.DB.Where("event_id = ?", eventId).Find(&list)
 	if err != nil {
 		return nil, err
