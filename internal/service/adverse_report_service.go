@@ -43,8 +43,8 @@ func (a *AdverseReportService) Create(event *schema.AdverseEventAdd, token strin
 }
 
 func (a *AdverseReportService) Get(id int64) (*schema.AdverseEventInfo, error) {
-	e, _, err := a.common.Get(id)
-	if err != nil {
+	e, has, err := a.common.Get(id)
+	if err != nil || !has {
 		return nil, errors.New("不良反应报告不存在")
 	}
 	return e, nil
