@@ -50,7 +50,7 @@ func (a *AdverseReportService) Get(id int64) (*schema.AdverseEventInfo, error) {
 	return e, nil
 }
 
-func (a *AdverseReportService) GetList(page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
+func (a *AdverseReportService) GetList(page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
 	el, total, err := a.common.GetList(page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
@@ -59,7 +59,7 @@ func (a *AdverseReportService) GetList(page, pageSize int) ([]*schema.AdverseEve
 	return el, total, nil
 }
 
-func (a *AdverseReportService) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
+func (a *AdverseReportService) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
 	el, total, err := a.common.GetListByKeyword(keyword, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
@@ -68,7 +68,7 @@ func (a *AdverseReportService) GetListByKeyword(keyword string, page, pageSize i
 	return el, total, nil
 }
 
-func (a *AdverseReportService) GetListByUid(uid int64, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
+func (a *AdverseReportService) GetListByUid(uid int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
 	el, total, err := a.common.GetListByUid(uid, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())

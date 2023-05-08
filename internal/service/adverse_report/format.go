@@ -114,3 +114,12 @@ func (a *AdverseReportCommon) FormatEntity(schema *schema.AdverseEventAdd, uid *
 	}
 	return event, vaccineList, symptomList
 }
+
+func (a *AdverseReportCommon) FormatEventBriefInfo(entity *entity.AdverseEvent) *schema.AdverseEventBriefInfo {
+	eventBriefInfo := &schema.AdverseEventBriefInfo{
+		Id:          entity.Id,
+		CreateDate:  entity.CreateDate,
+		Description: entity.Description,
+	}
+	return eventBriefInfo
+}

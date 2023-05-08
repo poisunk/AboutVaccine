@@ -25,27 +25,31 @@ func (repo *AdverseEventRepo) Get(id int64) (*entity.AdverseEvent, bool, error) 
 	return event, exist, nil
 }
 
-func (repo *AdverseEventRepo) GetList(page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
+func (repo *AdverseEventRepo) GetBriefList(page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
 	var list []*entity.AdverseEvent
-	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	total, err := repo.DB.Limit(pageSize, (page-1)*pageSize).Cols("id", "uid", "create_date", "description").
+		FindAndCount(&list)
 	if err != nil {
 		return nil, 0, err
 	}
 	return list, total, nil
 }
 
-func (repo *AdverseEventRepo) GetListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
+func (repo *AdverseEventRepo) GetBriefListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
 	var list []*entity.AdverseEvent
-	total, err := repo.DB.Where("uid = ?", uid).Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	total, err := repo.DB.Where("uid = ?", uid).Cols("id", "uid", "create_date", "description").
+		Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
 	if err != nil {
 		return nil, 0, err
 	}
 	return list, total, nil
 }
 
-func (repo *AdverseEventRepo) GetListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
+func (repo *AdverseEventRepo) GetBriefListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error) {
 	var list []*entity.AdverseEvent
-	total, err := repo.DB.Where("description like ?", "%"+keyword+"%").Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
+	total, err := repo.DB.Where("description like ?", "%"+keyword+"%").
+		Cols("id", "uid", "create_date", "description").
+		Limit(pageSize, (page-1)*pageSize).FindAndCount(&list)
 	if err != nil {
 		return nil, 0, err
 	}

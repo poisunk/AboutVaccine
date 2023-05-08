@@ -11,9 +11,9 @@ import (
 type AdverseEventRepo interface {
 	Create(event *entity.AdverseEvent) error
 	Get(id int64) (*entity.AdverseEvent, bool, error)
-	GetList(page, pageSize int) ([]*entity.AdverseEvent, int64, error)
-	GetListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
-	GetListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetBriefList(page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetBriefListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetBriefListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
 }
@@ -60,24 +60,25 @@ func (a *AdverseReportCommon) Get(id int64) (*schema.AdverseEventInfo, bool, err
 	}
 	eventInfo := a.FormatEventInfo(event)
 	a.LoadVaccineAndSymptomList(eventInfo)
-	a.LoadUserName(eventInfo, event.Uid)
+	eventInfo.UserName = a.LoadUserName(event.Uid)
 	return eventInfo, has, nil
 }
 
-func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
-	events, total, err := a.adverseEventRepo.GetList(page, pageSize)
+func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
+	events, total, err := a.adverseEventRepo.GetBriefList(page, pageSize)
 	if err != nil {
 		return nil, total, err
 	}
-	eventInfos := make([]*schema.AdverseEventInfo, 0)
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
 	var wg sync.WaitGroup
 	for _, event := range events {
-		eventInfo := a.FormatEventInfo(event)
+		eventInfo := a.FormatEventBriefInfo(event)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			a.LoadVaccineAndSymptomList(eventInfo)
-			a.LoadUserName(eventInfo, event.Uid)
+			symptomList, _ := a.GetSymptomListByEventId(event.Id)
+			eventInfo.SymptomList = symptomList
+			eventInfo.UserName = a.LoadUserName(event.Uid)
 		}()
 		eventInfos = append(eventInfos, eventInfo)
 	}
@@ -85,20 +86,43 @@ func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEven
 	return eventInfos, total, nil
 }
 
-func (a *AdverseReportCommon) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
-	events, total, err := a.adverseEventRepo.GetListByKeyword(keyword, page, pageSize)
+func (a *AdverseReportCommon) GetListByKeyword(keyword string, page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
+	events, total, err := a.adverseEventRepo.GetBriefListByKeyword(keyword, page, pageSize)
 	if err != nil {
 		return nil, total, err
 	}
-	eventInfos := make([]*schema.AdverseEventInfo, 0)
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
 	var wg sync.WaitGroup
 	for _, event := range events {
-		eventInfo := a.FormatEventInfo(event)
+		eventInfo := a.FormatEventBriefInfo(event)
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			a.LoadVaccineAndSymptomList(eventInfo)
-			a.LoadUserName(eventInfo, event.Uid)
+			symptomList, _ := a.GetSymptomListByEventId(event.Id)
+			eventInfo.SymptomList = symptomList
+			eventInfo.UserName = a.LoadUserName(event.Uid)
+		}()
+		eventInfos = append(eventInfos, eventInfo)
+	}
+	wg.Wait()
+	return eventInfos, total, nil
+}
+
+func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, int64, error) {
+	events, total, err := a.adverseEventRepo.GetBriefListByUid(uid, page, pageSize)
+	if err != nil {
+		return nil, total, err
+	}
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
+	var wg sync.WaitGroup
+	for _, event := range events {
+		eventInfo := a.FormatEventBriefInfo(event)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			symptomList, _ := a.GetSymptomListByEventId(event.Id)
+			eventInfo.SymptomList = symptomList
+			eventInfo.UserName = a.LoadUserName(event.Uid)
 		}()
 		eventInfos = append(eventInfos, eventInfo)
 	}
@@ -169,27 +193,6 @@ func (a *AdverseReportCommon) GetSymptomListByEventId(id int64) ([]*schema.Adver
 	return symptomList, nil
 }
 
-func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*schema.AdverseEventInfo, int64, error) {
-	events, total, err := a.adverseEventRepo.GetListByUid(uid, page, pageSize)
-	if err != nil {
-		return nil, total, err
-	}
-	eventInfos := make([]*schema.AdverseEventInfo, 0)
-	var wg sync.WaitGroup
-	for _, event := range events {
-		eventInfo := a.FormatEventInfo(event)
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			a.LoadVaccineAndSymptomList(eventInfo)
-			a.LoadUserName(eventInfo, event.Uid)
-		}()
-		eventInfos = append(eventInfos, eventInfo)
-	}
-	wg.Wait()
-	return eventInfos, total, nil
-}
-
 func (a *AdverseReportCommon) GetUid(id int64) (int64, bool, error) {
 	return a.adverseEventRepo.GetUid(id)
 }
@@ -207,16 +210,15 @@ func (a *AdverseReportCommon) LoadVaccineAndSymptomList(event *schema.AdverseEve
 	return nil
 }
 
-func (a *AdverseReportCommon) LoadUserName(event *schema.AdverseEventInfo, uid *int64) {
+func (a *AdverseReportCommon) LoadUserName(uid *int64) string {
 	if uid == nil {
-		return
+		return ""
 	}
 	name, err := a.userCommon.GetUserNameByUid(*uid)
 	if err != nil {
-		return
+		return ""
 	}
-	event.UserName = name
-	return
+	return name
 }
 
 func (a *AdverseReportCommon) Delete(id int64) error {
