@@ -24,6 +24,14 @@ type AdverseEventInfo struct {
 	SymptomList         []*AdverseSymptomInfo `json:"symptomList"`
 }
 
+type AdverseEventBriefInfo struct {
+	Id          int64                 `json:"id"`
+	UserName    string                `json:"userName"`
+	CreateDate  time.Time             `json:"createDate"`
+	Description string                `json:"description"`
+	SymptomList []*AdverseSymptomInfo `json:"symptomList"`
+}
+
 type AdverseEventAdd struct {
 	Code                string               `json:"code"`
 	Name                string               `json:"name"`

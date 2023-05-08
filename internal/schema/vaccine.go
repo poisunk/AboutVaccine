@@ -20,6 +20,13 @@ type VaccineInfo struct {
 	DrugCodeNote      string `json:"drugCodeNote"`
 }
 
+type VaccineBriefInfo struct {
+	Id                int64  `json:"id"`
+	Type              string `json:"type"`
+	ProductName       string `json:"productName"`
+	ProductionCompany string `json:"productionCompany"`
+}
+
 type VaccineSimpleInfo struct {
 	Id   int64  `json:"id"`
 	Type string `json:"type"`

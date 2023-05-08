@@ -2,7 +2,7 @@ package schema
 
 type AdverseSymptomInfo struct {
 	Symptom string `json:"symptom"`
-	OAETerm string `json:"oaeTerm"`
+	OAETerm string `json:"oaeIRI"`
 }
 
 type AdverseSymptomAdd struct {
