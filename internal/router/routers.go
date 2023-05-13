@@ -47,7 +47,7 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 	apiGroup := r.Group("/api")
 	{
 		// VaccineCFDA数据，来自CFDA官网
-		apiGroup.GET("/vaccine/cfda", a.VaccineController.GetVaccineList)
+		apiGroup.GET("/vaccine/cfda", a.VaccineController.GetVaccine)
 		apiGroup.GET("/vaccine/type", a.VaccineController.GetVaccineType)
 		// 不良反应
 		apiGroup.POST("/adverse", a.AdverseEventController.CreateAdverseEvent)

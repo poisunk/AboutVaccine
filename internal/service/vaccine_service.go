@@ -5,6 +5,7 @@ import (
 	"about-vaccine/internal/service/vaccine"
 	"errors"
 	"log"
+	"strconv"
 )
 
 type VaccineService struct {
@@ -22,7 +23,8 @@ func NewVaccineService(
 	}
 }
 
-func (s *VaccineService) Get(id int64) (*schema.VaccineInfo, error) {
+func (s *VaccineService) Get(idStr string) (*schema.VaccineInfo, error) {
+	id, _ := strconv.ParseInt(idStr, 10, 64)
 	v, has, err := s.vaccineCommon.Get(id)
 	if err != nil || !has {
 		return nil, errors.New("疫苗不存在")

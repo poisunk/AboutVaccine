@@ -17,9 +17,17 @@ func NewVaccineController(vaccineService *service.VaccineService) *VaccineContro
 	}
 }
 
-// GetVaccineList 查询CFDA疫苗数据
+// GetVaccine 查询CFDA疫苗数据
 // 可选参数: page, pageSize, productName
-func (v *VaccineController) GetVaccineList(c *gin.Context) {
+func (v *VaccineController) GetVaccine(c *gin.Context) {
+	id := c.Query("id")
+	// 根据id查询
+	if len(id) != 0 {
+		vaccine, err := v.service.Get(id)
+		handler.HandleResponse(c, err, vaccine)
+		return
+	}
+
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	typeStr := c.DefaultQuery("type", "")
