@@ -7,8 +7,8 @@ import (
 
 type VaccineRepo interface {
 	Get(id int64) (*entity.Vaccine, bool, error)
-	GetListBySimilarName(keyword string, page, pageSize int) ([]*entity.Vaccine, int64, error)
-	GetListByType(tid int64, page, pageSize int) ([]*entity.Vaccine, int64, error)
+	GetBriefListBySimilarName(keyword string, page, pageSize int) ([]*entity.Vaccine, int64, error)
+	GetBriefListByType(tid int64, page, pageSize int) ([]*entity.Vaccine, int64, error)
 	GetSimpleListBySimilarName(keyword string, page, pageSize int) ([]*entity.Vaccine, int64, error)
 	Update(v *entity.Vaccine) error
 }
@@ -25,12 +25,12 @@ func NewVaccineCommon(vaccineRepo VaccineRepo, vaccineTypeCommon *VaccineTypeCom
 	}
 }
 
-func (vc *VaccineCommon) GetList(keyword string, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
-	entitys, total, err := vc.vaccineRepo.GetListBySimilarName(keyword, page, pageSize)
+func (vc *VaccineCommon) GetList(keyword string, page, pageSize int) ([]*schema.VaccineBriefInfo, int64, error) {
+	entitys, total, err := vc.vaccineRepo.GetBriefListBySimilarName(keyword, page, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
-	list := make([]*schema.VaccineInfo, 0, len(entitys))
+	list := make([]*schema.VaccineBriefInfo, 0, len(entitys))
 	for _, v := range entitys {
 		if len(v.Type) == 0 {
 			err := vc.setupVaccineType(v)
@@ -38,17 +38,17 @@ func (vc *VaccineCommon) GetList(keyword string, page, pageSize int) ([]*schema.
 				return nil, 0, err
 			}
 		}
-		list = append(list, vc.FormatVaccineInfo(v))
+		list = append(list, vc.FormatVaccineBriefInfo(v))
 	}
 	return list, total, nil
 }
 
-func (vc *VaccineCommon) GetListByType(tid int64, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
-	entitys, total, err := vc.vaccineRepo.GetListByType(tid, page, pageSize)
+func (vc *VaccineCommon) GetListByType(tid int64, page, pageSize int) ([]*schema.VaccineBriefInfo, int64, error) {
+	entitys, total, err := vc.vaccineRepo.GetBriefListByType(tid, page, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
-	list := make([]*schema.VaccineInfo, 0, len(entitys))
+	list := make([]*schema.VaccineBriefInfo, 0, len(entitys))
 	for _, v := range entitys {
 		if len(v.Type) == 0 {
 			err := vc.setupVaccineType(v)
@@ -56,13 +56,13 @@ func (vc *VaccineCommon) GetListByType(tid int64, page, pageSize int) ([]*schema
 				return nil, 0, err
 			}
 		}
-		list = append(list, vc.FormatVaccineInfo(v))
+		list = append(list, vc.FormatVaccineBriefInfo(v))
 	}
 	return list, total, nil
 }
 
 func (vc *VaccineCommon) GetSimpleListBySimilarName(keyword string, page, pageSize int) ([]*schema.VaccineSimpleInfo, int64, error) {
-	entitys, total, err := vc.vaccineRepo.GetListBySimilarName(keyword, page, pageSize)
+	entitys, total, err := vc.vaccineRepo.GetBriefListBySimilarName(keyword, page, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}

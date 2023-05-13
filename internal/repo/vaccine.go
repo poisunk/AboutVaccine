@@ -26,10 +26,10 @@ func (repo *VaccineRepo) Get(id int64) (*entity.Vaccine, bool, error) {
 	return v, exist, nil
 }
 
-func (repo *VaccineRepo) GetListBySimilarName(name string, page, pageSize int) ([]*entity.Vaccine, int64, error) {
+func (repo *VaccineRepo) GetBriefListBySimilarName(name string, page, pageSize int) ([]*entity.Vaccine, int64, error) {
 	var vaccines []*entity.Vaccine
-	// TODO
 	total, err := repo.DB.Where("product_name LIKE ?", utile.HandleSearchWord(name)).
+		Cols("id", "type", "product_name", "production_company").
 		Limit(pageSize, (page-1)*pageSize).FindAndCount(&vaccines)
 	if err != nil {
 		return nil, 0, err
@@ -37,9 +37,10 @@ func (repo *VaccineRepo) GetListBySimilarName(name string, page, pageSize int) (
 	return vaccines, total, nil
 }
 
-func (repo *VaccineRepo) GetListByType(tid int64, page, pageSize int) ([]*entity.Vaccine, int64, error) {
+func (repo *VaccineRepo) GetBriefListByType(tid int64, page, pageSize int) ([]*entity.Vaccine, int64, error) {
 	var vaccines []*entity.Vaccine
 	total, err := repo.DB.Where("tid = ?", tid).
+		Cols("id", "type", "product_name", "production_company").
 		Limit(pageSize, (page-1)*pageSize).FindAndCount(&vaccines)
 	if err != nil {
 		return nil, 0, err
@@ -49,7 +50,6 @@ func (repo *VaccineRepo) GetListByType(tid int64, page, pageSize int) ([]*entity
 
 func (repo *VaccineRepo) GetSimpleListBySimilarName(name string, page, pageSize int) ([]*entity.Vaccine, int64, error) {
 	var vaccines []*entity.Vaccine
-	// TODO
 	total, err := repo.DB.Where("product_name LIKE ?", utile.HandleSearchWord(name)).
 		Limit(pageSize, (page-1)*pageSize).Cols("id", "type", "product_name").FindAndCount(&vaccines)
 	if err != nil {

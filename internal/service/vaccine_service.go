@@ -32,7 +32,7 @@ func (s *VaccineService) Get(idStr string) (*schema.VaccineInfo, error) {
 	return v, nil
 }
 
-func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
+func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*schema.VaccineBriefInfo, int64, error) {
 	vs, total, err := s.vaccineCommon.GetList(keyword, page, pageSize)
 	if err != nil {
 		log.Println(err.Error())
@@ -41,7 +41,7 @@ func (s *VaccineService) GetByName(keyword string, page, pageSize int) ([]*schem
 	return vs, total, nil
 }
 
-func (s *VaccineService) GetByType(typeStr string, page, pageSize int) ([]*schema.VaccineInfo, int64, error) {
+func (s *VaccineService) GetByType(typeStr string, page, pageSize int) ([]*schema.VaccineBriefInfo, int64, error) {
 	tid, has, err := s.vaccineTypeCommon.GetIdByType(typeStr)
 	if err != nil || has == false {
 		log.Println(err.Error())
