@@ -17,7 +17,7 @@ type RespBody struct {
 type PagedData struct {
 	Page     int         `json:"page"`
 	PageSize int         `json:"pageSize"`
-	Total    int64       `json:"total"`
+	Total    int64       `json:"total,omitempty"`
 	Data     interface{} `json:"data"`
 }
 

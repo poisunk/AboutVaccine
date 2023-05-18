@@ -56,6 +56,26 @@ func (repo *AdverseEventRepo) GetBriefListByKeyword(keyword string, page, pageSi
 	return list, total, nil
 }
 
+func (repo *AdverseEventRepo) GetListByVaccineId(vid int64, page, pageSize int) ([]*entity.AdverseEvent, error) {
+	var list []*entity.AdverseEvent
+	err := repo.DB.SQL("SELECT id, uid, create_date, description FROM adverse_event WHERE id in (SELECT DISTINCT event_id FROM adverse_vaccine WHERE vaccine_id = ?) LIMIT ? OFFSET ?",
+		vid, pageSize, (page-1)*pageSize).Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func (repo *AdverseEventRepo) GetListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseEvent, error) {
+	var list []*entity.AdverseEvent
+	err := repo.DB.SQL("SELECT id, uid, create_date, description FROM adverse_event WHERE id in (SELECT DISTINCT event_id FROM adverse_symptom WHERE oae_id = ?) LIMIT ? OFFSET ?",
+		oid, pageSize, (page-1)*pageSize).Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
 func (repo *AdverseEventRepo) GetUid(id int64) (int64, bool, error) {
 	var uid int64
 	has, err := repo.DB.Table(&entity.AdverseEvent{}).ID(id).Cols("uid").Get(&uid)

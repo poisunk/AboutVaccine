@@ -53,6 +53,8 @@ func (v *VaccineController) GetVaccine(c *gin.Context) {
 	})
 }
 
+// GetVaccineType 查询疫苗类型信息
+// 可选参数: page, pageSize, id
 func (v *VaccineController) GetVaccineType(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Query("id"), 10, 64)
 	if err == nil {

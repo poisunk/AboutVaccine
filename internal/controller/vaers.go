@@ -18,7 +18,7 @@ func NewVaersController(vaersService *service.VaersService) *VaersController {
 	}
 }
 
-// SearchVaersResult 检索Vaers数据
+// SearchVaersResult 检索VaersResult数据
 func (v *VaersController) SearchVaersResult(c *gin.Context) {
 	vaccineId := c.Query("vaccineId")
 	symptomId := c.Query("symptomId")

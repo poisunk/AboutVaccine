@@ -77,6 +77,32 @@ func (a *AdverseReportService) GetListByUid(uid int64, page, pageSize int) ([]*s
 	return el, total, nil
 }
 
+func (a *AdverseReportService) GetListByVaccineId(vidStr string, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
+	vid, err := strconv.ParseInt(vidStr, 10, 64)
+	if err != nil {
+		return nil, errors.New("vaccineId参数错误")
+	}
+	el, err := a.common.GetListByVaccineId(vid, page, pageSize)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, errors.New("获取Event列表失败")
+	}
+	return el, nil
+}
+
+func (a *AdverseReportService) GetListByOAEId(oidStr string, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
+	oid, err := strconv.ParseInt(oidStr, 10, 64)
+	if err != nil {
+		return nil, errors.New("oaeId参数错误")
+	}
+	el, err := a.common.GetListByOAEId(oid, page, pageSize)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, errors.New("获取Event列表失败")
+	}
+	return el, nil
+}
+
 func (a *AdverseReportService) Delete(id int64, token string) error {
 	claim, err := jwt.ParseToken(token)
 	if err != nil {

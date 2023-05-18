@@ -16,6 +16,8 @@ type AdverseEventRepo interface {
 	GetBriefListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
+	GetListByVaccineId(vid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
+	GetListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
 }
 
 type AdverseSymptomRepo interface {
@@ -191,6 +193,44 @@ func (a *AdverseReportCommon) GetSymptomListByEventId(id int64) ([]*schema.Adver
 		symptomList = append(symptomList, symptom)
 	}
 	return symptomList, nil
+}
+
+func (a *AdverseReportCommon) GetListByVaccineId(id int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
+	entitys, err := a.adverseEventRepo.GetListByVaccineId(id, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0, len(entitys))
+	var wg sync.WaitGroup
+	for _, v := range entitys {
+		wg.Add(1)
+		go func(e *entity.AdverseEvent) {
+			defer wg.Done()
+			vaccineInfo := a.FormatEventBriefInfo(e)
+			eventInfos = append(eventInfos, vaccineInfo)
+		}(v)
+	}
+	wg.Wait()
+	return eventInfos, nil
+}
+
+func (a *AdverseReportCommon) GetListByOAEId(oid int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
+	entitys, err := a.adverseEventRepo.GetListByOAEId(oid, page, pageSize)
+	if err != nil {
+		return nil, err
+	}
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0, len(entitys))
+	var wg sync.WaitGroup
+	for _, v := range entitys {
+		wg.Add(1)
+		go func(e *entity.AdverseEvent) {
+			defer wg.Done()
+			vaccineInfo := a.FormatEventBriefInfo(e)
+			eventInfos = append(eventInfos, vaccineInfo)
+		}(v)
+	}
+	wg.Wait()
+	return eventInfos, nil
 }
 
 func (a *AdverseReportCommon) GetUid(id int64) (int64, bool, error) {
