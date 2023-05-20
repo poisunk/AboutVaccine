@@ -50,6 +50,7 @@ func (a *AdverseReportCommon) FormatVaccineInfo(
 	handler func(info *schema.AdverseVaccineInfo),
 ) *schema.AdverseVaccineInfo {
 	vaccineInfo := &schema.AdverseVaccineInfo{
+		Id:            entity.VaccineId,
 		VaccinateDate: entity.VaccinateDate,
 		Dose:          entity.Dose,
 		Route:         entity.Route,
@@ -68,6 +69,9 @@ func (a *AdverseReportCommon) FormatSymptomInfo(
 	symptomInfo := &schema.AdverseSymptomInfo{
 		Symptom: entity.Symptom,
 		OAETerm: entity.OAETerm,
+	}
+	if entity.OAEId != nil {
+		symptomInfo.OAEId = *entity.OAEId
 	}
 	if handler != nil {
 		handler(symptomInfo)

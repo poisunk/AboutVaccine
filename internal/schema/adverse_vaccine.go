@@ -3,6 +3,7 @@ package schema
 import "time"
 
 type AdverseVaccineInfo struct {
+	Id            int64      `json:"id"`
 	Type          string     `json:"type"`
 	Manufacturer  string     `json:"manufacturer"`
 	Name          string     `json:"name"`
