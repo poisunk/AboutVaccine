@@ -44,19 +44,19 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
 	// 1. 获取id, 是否通过id查询
-	s := c.Query("id")
-	if len(s) != 0 {
+	id := c.Query("id")
+	if len(id) != 0 {
 		// 根据id查询
-		id, _ := strconv.ParseInt(s, 10, 64)
+		id, _ := strconv.ParseInt(id, 10, 64)
 		adverseEvent, err := a.AdverseEventService.Get(id)
 		handler.HandleResponse(c, err, adverseEvent)
 		return
 	}
 	// 2. 通过keyword查询
-	s = c.Query("keyword")
-	if len(s) != 0 {
+	keyword := c.Query("keyword")
+	if len(keyword) != 0 {
 		//// 根据keyword查询
-		adverseEvent, total, err := a.AdverseEventService.GetListByKeyword(s, page, pageSize)
+		adverseEvent, total, err := a.AdverseEventService.GetListByKeyword(keyword, page, pageSize)
 		handler.HandleResponse(c, err, handler.PagedData{
 			Total:    total,
 			Page:     page,
@@ -66,10 +66,10 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 		return
 	}
 	// 3. 通过vaccineId查询
-	s = c.Query("vaccineId")
-	if len(s) != 0 {
+	vaccineId := c.Query("vaccineId")
+	if len(vaccineId) != 0 {
 		// 根据vaccineId查询
-		adverseEvent, err := a.AdverseEventService.GetListByVaccineId(s, page, pageSize)
+		adverseEvent, err := a.AdverseEventService.GetListByVaccineId(vaccineId, page, pageSize)
 		handler.HandleResponse(c, err, handler.PagedData{
 			Page:     page,
 			PageSize: pageSize,
@@ -78,10 +78,10 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 		return
 	}
 	// 4. 通过oaeId查询
-	s = c.Query("oaeId")
-	if len(s) != 0 {
+	oaeId := c.Query("oaeId")
+	if len(oaeId) != 0 {
 		// 根据oaeTerm查询
-		adverseEvent, err := a.AdverseEventService.GetListByOAEId(s, page, pageSize)
+		adverseEvent, err := a.AdverseEventService.GetListByOAEId(oaeId, page, pageSize)
 		handler.HandleResponse(c, err, handler.PagedData{
 			Page:     page,
 			PageSize: pageSize,
@@ -96,6 +96,21 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 		Page:     page,
 		PageSize: pageSize,
 		Data:     adverseEventList,
+	})
+}
+
+func (a *AdverseReportController) GetAdverseResult(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
+	// 1. 获取vaccineId, oaeId
+	vaccineId := c.Query("vaccineId")
+	oaeId := c.Query("oaeId")
+	// 2. 根据vaccineId, oaeId查询
+	adverseEvent, err := a.AdverseEventService.GetResult(vaccineId, oaeId, page, pageSize)
+	handler.HandleResponse(c, err, handler.PagedData{
+		Page:     page,
+		PageSize: pageSize,
+		Data:     adverseEvent,
 	})
 }
 

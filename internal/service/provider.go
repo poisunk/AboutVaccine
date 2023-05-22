@@ -17,6 +17,7 @@ var ProviderSetService = wire.NewSet(
 	vaccine.NewVaccineTypeCommon,
 	NewAdverseReportService,
 	adverse_report.NewAdverseEventCommon,
+	adverse_report.NewAdverseResultCommon,
 	NewOaeTermService,
 	oae.NewOAETermCommon,
 	NewVaersService,

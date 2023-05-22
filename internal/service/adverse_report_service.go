@@ -11,15 +11,18 @@ import (
 
 type AdverseReportService struct {
 	common         *adverse_report.AdverseReportCommon
+	resultCommon   *adverse_report.AdverseResultCommon
 	vaccineService *VaccineService
 }
 
 func NewAdverseReportService(
 	common *adverse_report.AdverseReportCommon,
+	resultCommon *adverse_report.AdverseResultCommon,
 	vaccineService *VaccineService,
 ) *AdverseReportService {
 	return &AdverseReportService{
 		common:         common,
+		resultCommon:   resultCommon,
 		vaccineService: vaccineService,
 	}
 }
@@ -99,6 +102,36 @@ func (a *AdverseReportService) GetListByOAEId(oidStr string, page, pageSize int)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, errors.New("获取Event列表失败")
+	}
+	return el, nil
+}
+
+func (a *AdverseReportService) GetResult(vid, oid string, page, pageSize int) ([]*schema.AdverseResultInfo, error) {
+	if len(vid) != 0 && len(oid) == 0 {
+		id, _ := strconv.ParseInt(vid, 10, 64)
+		return a.GetResultByVaccineId(id, page, pageSize)
+	}
+	if len(vid) == 0 && len(oid) != 0 {
+		id, _ := strconv.ParseInt(oid, 10, 64)
+		return a.GetResultByOAEId(id, page, pageSize)
+	}
+	return nil, errors.New("参数不能为空")
+}
+
+func (a *AdverseReportService) GetResultByVaccineId(vid int64, page, pageSize int) ([]*schema.AdverseResultInfo, error) {
+	el, err := a.resultCommon.GetByVaccineId(vid, page, pageSize)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, errors.New("获取Result列表失败")
+	}
+	return el, nil
+}
+
+func (a *AdverseReportService) GetResultByOAEId(oid int64, page, pageSize int) ([]*schema.AdverseResultInfo, error) {
+	el, err := a.resultCommon.GetByOAEId(oid, page, pageSize)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, errors.New("获取Result列表失败")
 	}
 	return el, nil
 }

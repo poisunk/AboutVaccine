@@ -69,9 +69,7 @@ func (a *AdverseReportCommon) FormatSymptomInfo(
 	symptomInfo := &schema.AdverseSymptomInfo{
 		Symptom: entity.Symptom,
 		OAETerm: entity.OAETerm,
-	}
-	if entity.OAEId != nil {
-		symptomInfo.OAEId = *entity.OAEId
+		OAEId:   entity.OAEId,
 	}
 	if handler != nil {
 		handler(symptomInfo)
@@ -111,7 +109,7 @@ func (a *AdverseReportCommon) FormatEntity(schema *schema.AdverseEventAdd, uid *
 	for _, s := range schema.SymptomList {
 		symptom := &entity.AdverseSymptom{
 			Symptom: s.Symptom,
-			OAEId:   s.OAEId,
+			OAEId:   *(s.OAEId),
 			OAETerm: s.OAETerm,
 		}
 		symptomList = append(symptomList, symptom)

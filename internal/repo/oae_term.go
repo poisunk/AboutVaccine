@@ -15,7 +15,7 @@ func NewOAETermRepo(db *dao.DB) oae.OAETermRepo {
 }
 
 func (repo *OAETermRepo) GetByIRI(IRI string) (*entity.OAETerm, bool, error) {
-	oaeTerm := new(entity.OAETerm)
+	oaeTerm := &entity.OAETerm{}
 	exist, err := repo.DB.Where("TermIRI = ?", IRI).Get(oaeTerm)
 	if err != nil {
 		return nil, false, err
@@ -31,4 +31,13 @@ func (repo *OAETermRepo) GetBySimilarLabel(label string, page, pageSize int) ([]
 		return nil, 0, err
 	}
 	return oaeList, total, nil
+}
+
+func (repo *OAETermRepo) GetName(oid int64) (string, bool, error) {
+	term := &entity.OAETerm{}
+	exist, err := repo.DB.ID(oid).Get(term)
+	if err != nil {
+		return "", false, err
+	}
+	return term.TermLabel, exist, nil
 }

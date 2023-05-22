@@ -58,6 +58,15 @@ func (repo *VaccineRepo) GetSimpleListBySimilarName(name string, page, pageSize 
 	return vaccines, total, nil
 }
 
+func (repo *VaccineRepo) GetName(id int64) (string, bool, error) {
+	v := &entity.Vaccine{}
+	exist, err := repo.DB.ID(id).Cols("product_name").Get(v)
+	if err != nil {
+		return "", false, err
+	}
+	return v.ProductName, exist, nil
+}
+
 func (repo *VaccineRepo) Update(vaccine *entity.Vaccine) error {
 	_, err := repo.DB.ID(vaccine.Id).Update(vaccine)
 	return err

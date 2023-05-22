@@ -53,6 +53,7 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 		apiGroup.POST("/adverse", a.AdverseEventController.CreateAdverseEvent)
 		apiGroup.GET("/adverse", a.AdverseEventController.GetAdverseEvent)
 		apiGroup.DELETE("/adverse", a.AdverseEventController.DeleteAdverseEvent)
+		apiGroup.GET("/adverse/result", a.AdverseEventController.GetAdverseResult)
 		// OAE相关数据
 		apiGroup.GET("/oae/label", a.OAETermController.GetOaeTermsByLabel)
 		apiGroup.GET("/oae/IRI", a.OAETermController.GetOaeTermByIRI)

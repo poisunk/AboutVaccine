@@ -25,6 +25,16 @@ func (repo *AdverseVaccineRepo) GetListByEventId(eventId int64) ([]*entity.Adver
 	return list, nil
 }
 
+func (repo *AdverseVaccineRepo) GetListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseVaccine, error) {
+	var list []*entity.AdverseVaccine
+	err := repo.DB.SQL("SELECT DISTINCT vaccine_id FROM adverse_vaccine WHERE event_id IN (SELECT DISTINCT event_id FROM adverse_symptom WHERE oae_id = ?) LIMIT ? OFFSET ?",
+		oid, pageSize, (page-1)*pageSize).Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
 func (repo *AdverseVaccineRepo) CreateList(vaccine []*entity.AdverseVaccine) error {
 	_, err := repo.DB.Insert(vaccine)
 	return err

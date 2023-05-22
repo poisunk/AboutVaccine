@@ -14,20 +14,25 @@ type AdverseEventRepo interface {
 	GetBriefList(page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetBriefListByUid(uid int64, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
 	GetBriefListByKeyword(keyword string, page, pageSize int) ([]*entity.AdverseEvent, int64, error)
+	GetBriefListByVaccineId(vid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
+	GetBriefListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
 	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
-	GetListByVaccineId(vid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
-	GetListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseEvent, error)
+	Count() (int64, error)
+	CountByVaccineId(vid int64) (int64, error)
+	CountByOAEId(oid int64) (int64, error)
 }
 
 type AdverseSymptomRepo interface {
 	CreateList(symptoms []*entity.AdverseSymptom) error
 	GetListByEventId(eventId int64) ([]*entity.AdverseSymptom, error)
+	GetListByVaccineId(vid int64, page, pageSize int) ([]*entity.AdverseSymptom, error)
 }
 
 type AdverseVaccineRepo interface {
 	CreateList(vaccines []*entity.AdverseVaccine) error
 	GetListByEventId(eventId int64) ([]*entity.AdverseVaccine, error)
+	GetListByOAEId(oid int64, page, pageSize int) ([]*entity.AdverseVaccine, error)
 }
 
 type AdverseReportCommon struct {
@@ -196,7 +201,7 @@ func (a *AdverseReportCommon) GetSymptomListByEventId(id int64) ([]*schema.Adver
 }
 
 func (a *AdverseReportCommon) GetListByVaccineId(id int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
-	entitys, err := a.adverseEventRepo.GetListByVaccineId(id, page, pageSize)
+	entitys, err := a.adverseEventRepo.GetBriefListByVaccineId(id, page, pageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +220,7 @@ func (a *AdverseReportCommon) GetListByVaccineId(id int64, page, pageSize int) (
 }
 
 func (a *AdverseReportCommon) GetListByOAEId(oid int64, page, pageSize int) ([]*schema.AdverseEventBriefInfo, error) {
-	entitys, err := a.adverseEventRepo.GetListByOAEId(oid, page, pageSize)
+	entitys, err := a.adverseEventRepo.GetBriefListByOAEId(oid, page, pageSize)
 	if err != nil {
 		return nil, err
 	}

@@ -11,6 +11,7 @@ type VaccineRepo interface {
 	GetBriefListByType(tid int64, page, pageSize int) ([]*entity.Vaccine, int64, error)
 	GetSimpleListBySimilarName(keyword string, page, pageSize int) ([]*entity.Vaccine, int64, error)
 	Update(v *entity.Vaccine) error
+	GetName(id int64) (string, bool, error)
 }
 
 type VaccineCommon struct {
@@ -85,6 +86,10 @@ func (vc *VaccineCommon) Get(id int64) (*schema.VaccineInfo, bool, error) {
 		return nil, false, err
 	}
 	return vc.FormatVaccineInfo(v), ok, nil
+}
+
+func (vc *VaccineCommon) GetName(id int64) (string, bool, error) {
+	return vc.vaccineRepo.GetName(id)
 }
 
 func (vc *VaccineCommon) setupVaccineType(v *entity.Vaccine) error {
