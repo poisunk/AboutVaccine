@@ -101,11 +101,3 @@ func (repo *AdverseEventRepo) Delete(id int64) error {
 func (repo *AdverseEventRepo) Count() (int64, error) {
 	return repo.DB.Count(&entity.AdverseEvent{})
 }
-
-func (repo *AdverseEventRepo) CountByVaccineId(vid int64) (int64, error) {
-	return repo.DB.Where("id in (SELECT DISTINCT event_id FROM adverse_vaccine WHERE vaccine_id = ?)", vid).Count(&entity.AdverseEvent{})
-}
-
-func (repo *AdverseEventRepo) CountByOAEId(oid int64) (int64, error) {
-	return repo.DB.Where("id in (SELECT DISTINCT event_id FROM adverse_symptom WHERE oae_id = ?)", oid).Count(&entity.AdverseEvent{})
-}

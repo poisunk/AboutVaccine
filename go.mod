@@ -7,6 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/wire v0.5.0
+	github.com/rs/zerolog v1.15.0
 	xorm.io/xorm v1.3.2
 )
 

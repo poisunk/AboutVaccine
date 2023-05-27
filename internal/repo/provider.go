@@ -8,6 +8,7 @@ var ProviderSetRepo = wire.NewSet(
 	NewAdverseEventRepo,
 	NewAdverseSymptomRepo,
 	NewAdverseVaccineRepo,
+	NewAdverseResultRepo,
 	NewOAETermRepo,
 	NewUserRepo,
 	NewVaccineRepo,

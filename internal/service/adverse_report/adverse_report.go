@@ -19,8 +19,6 @@ type AdverseEventRepo interface {
 	GetUid(id int64) (int64, bool, error)
 	Delete(id int64) error
 	Count() (int64, error)
-	CountByVaccineId(vid int64) (int64, error)
-	CountByOAEId(oid int64) (int64, error)
 }
 
 type AdverseSymptomRepo interface {
@@ -169,7 +167,7 @@ func (a *AdverseReportCommon) GetVaccineListByEventId(id int64) ([]*schema.Adver
 	var wg sync.WaitGroup
 	for _, v := range vaccineEntitys {
 		wg.Add(1)
-		go func() {
+		go func(v *entity.AdverseVaccine) {
 			defer wg.Done()
 			vaccineInfo := a.FormatVaccineInfo(v, func(info *schema.AdverseVaccineInfo) {
 				example, _, err := a.vaccineCommon.Get(v.VaccineId)
@@ -181,7 +179,7 @@ func (a *AdverseReportCommon) GetVaccineListByEventId(id int64) ([]*schema.Adver
 				info.Manufacturer = example.ProductionCompany
 			})
 			vaccineList = append(vaccineList, vaccineInfo)
-		}()
+		}(v)
 	}
 	wg.Wait()
 	return vaccineList, nil
@@ -192,7 +190,7 @@ func (a *AdverseReportCommon) GetSymptomListByEventId(id int64) ([]*schema.Adver
 	if err != nil {
 		return nil, err
 	}
-	symptomList := make([]*schema.AdverseSymptomInfo, 0)
+	symptomList := make([]*schema.AdverseSymptomInfo, 0, len(symptomEntitys))
 	for _, s := range symptomEntitys {
 		symptom := a.FormatSymptomInfo(s, nil)
 		symptomList = append(symptomList, symptom)
@@ -212,6 +210,8 @@ func (a *AdverseReportCommon) GetListByVaccineId(id int64, page, pageSize int) (
 		go func(e *entity.AdverseEvent) {
 			defer wg.Done()
 			vaccineInfo := a.FormatEventBriefInfo(e)
+			symptomList, _ := a.GetSymptomListByEventId(e.Id)
+			vaccineInfo.SymptomList = symptomList
 			eventInfos = append(eventInfos, vaccineInfo)
 		}(v)
 	}
@@ -231,6 +231,8 @@ func (a *AdverseReportCommon) GetListByOAEId(oid int64, page, pageSize int) ([]*
 		go func(e *entity.AdverseEvent) {
 			defer wg.Done()
 			vaccineInfo := a.FormatEventBriefInfo(e)
+			symptomList, _ := a.GetSymptomListByEventId(e.Id)
+			vaccineInfo.SymptomList = symptomList
 			eventInfos = append(eventInfos, vaccineInfo)
 		}(v)
 	}

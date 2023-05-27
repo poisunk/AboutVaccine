@@ -3,7 +3,6 @@ package vaers
 import (
 	"about-vaccine/internal/entity"
 	"about-vaccine/internal/schema"
-	"log"
 	"sync"
 )
 
@@ -77,32 +76,34 @@ func (vc *VaersResultCommon) completeResult(v *entity.VaersResult) *schema.Vaers
 	// 总共需要四个数据a, b, vc, d
 	// 			 	目标疫苗		其他疫苗
 	// 目标不良反应	a			b
-	// 其他不良反应	vc			d
+	// 其他不良反应	c			d
 	result := vc.FormatResultInfo(v)
 	total_ac, err := vc.vaersResultRepo.SumByVaccineId(v.VaccineId)
 	total_ab, err := vc.vaersResultRepo.SumBySymptomId(v.SymptomId)
 	total_abcd, err := vc.vaersResultRepo.Sum()
-	log.Println(total_ac, total_ab, total_abcd)
 	if err != nil {
 		return result
 	}
 	a := float64(v.Total)
 	b, c := total_ab-a, total_ac-a
 	d := total_abcd - a - b - c
-	if a <= 0 || b <= 0 || c <= 0 || d <= 0 {
-		return result
-	}
 	result.Prr = vc.calculatePrr(a, b, c, d)
 	result.Chi = vc.calculateChi(a, b, c, d)
 	return result
 }
 
 func (vc *VaersResultCommon) calculatePrr(a, b, c, d float64) float64 {
+	if a <= 0 || b <= 0 || c <= 0 || d <= 0 {
+		return 0
+	}
 	result := (a / (a + c)) / (b / (b + d))
 	return result
 }
 
 func (vc *VaersResultCommon) calculateChi(a, b, c, d float64) float64 {
+	if a <= 0 || b <= 0 || c <= 0 || d <= 0 {
+		return 0
+	}
 	total := a + b + c + d
 	result := (total * (a*d - b*c) * (a*d - b*c)) / ((b + d) * (a + c) * (a + b) * (d + c))
 	return result
