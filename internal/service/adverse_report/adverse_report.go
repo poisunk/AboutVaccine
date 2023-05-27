@@ -125,12 +125,12 @@ func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*sc
 	for _, event := range events {
 		eventInfo := a.FormatEventBriefInfo(event)
 		wg.Add(1)
-		go func() {
+		go func(e *entity.AdverseEvent) {
 			defer wg.Done()
-			symptomList, _ := a.GetSymptomListByEventId(event.Id)
+			symptomList, _ := a.GetSymptomListByEventId(e.Id)
 			eventInfo.SymptomList = symptomList
-			eventInfo.UserName = a.LoadUserName(event.Uid)
-		}()
+			eventInfo.UserName = a.LoadUserName(e.Uid)
+		}(event)
 		eventInfos = append(eventInfos, eventInfo)
 	}
 	wg.Wait()
