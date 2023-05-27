@@ -41,3 +41,12 @@ func (repo *OAETermRepo) GetName(oid int64) (string, bool, error) {
 	}
 	return term.TermLabel, exist, nil
 }
+
+func (repo *OAETermRepo) GetByID(id int64) (*entity.OAETerm, bool, error) {
+	term := &entity.OAETerm{}
+	exist, err := repo.DB.ID(id).Get(term)
+	if err != nil {
+		return nil, false, err
+	}
+	return term, exist, nil
+}

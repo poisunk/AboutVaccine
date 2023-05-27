@@ -6,6 +6,7 @@ type OAETermRepo interface {
 	GetByIRI(string) (*entity.OAETerm, bool, error)
 	GetBySimilarLabel(keyword string, page, pageSize int) ([]*entity.OAETerm, int64, error)
 	GetName(int64) (string, bool, error)
+	GetByID(int64) (*entity.OAETerm, bool, error)
 }
 
 type OAETermCommon struct {
@@ -28,4 +29,8 @@ func (c *OAETermCommon) GetBySimilarLabel(keyword string, page, pageSize int) ([
 
 func (c *OAETermCommon) GetName(oid int64) (string, bool, error) {
 	return c.oaeTermRepo.GetName(oid)
+}
+
+func (c *OAETermCommon) GetByID(id int64) (*entity.OAETerm, bool, error) {
+	return c.oaeTermRepo.GetByID(id)
 }

@@ -58,6 +58,7 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 		apiGroup.GET("/oae/label", a.OAETermController.GetOaeTermsByLabel)
 		apiGroup.GET("/oae/IRI", a.OAETermController.GetOaeTermByIRI)
 		apiGroup.GET("/oae/parent", a.OAETermController.GetOaeTermParents)
+		apiGroup.GET("/oae/:id", a.OAETermController.GetOaeTermByID)
 		// VaccineType 疫苗类型相关
 		// 用户操作
 		apiGroup.POST("/user/login", a.UserController.Login)

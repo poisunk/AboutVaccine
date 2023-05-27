@@ -5,6 +5,7 @@ import (
 	"about-vaccine/internal/service/oae"
 	"errors"
 	"log"
+	"strconv"
 )
 
 type OaeTermService struct {
@@ -47,6 +48,24 @@ func (s *OaeTermService) GetParents(IRI string) ([]*entity.OAETerm, error) {
 	}
 	list = s.Reverse(list)
 	return list, nil
+}
+
+func (s *OaeTermService) GetByID(idStr string) (*entity.OAETerm, error) {
+	if idStr == "" {
+		return nil, errors.New("id参数不能为空")
+	}
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return nil, errors.New("id格式错误")
+	}
+	o, exist, err := s.common.GetByID(id)
+	if err != nil {
+		return nil, errors.New("获取OAETerm失败")
+	}
+	if !exist {
+		return nil, errors.New("目标OAETerm不存在")
+	}
+	return o, nil
 }
 
 func (s *OaeTermService) Reverse(list []*entity.OAETerm) []*entity.OAETerm {

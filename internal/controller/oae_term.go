@@ -55,3 +55,14 @@ func (o *OAETermController) GetOaeTermParents(c *gin.Context) {
 	list, err := o.service.GetParents(IRI)
 	handler.HandleResponse(c, err, list)
 }
+
+func (o *OAETermController) GetOaeTermByID(c *gin.Context) {
+	ID := c.Param("id")
+	if ID == "" {
+		handler.HandleResponse(c, errors.New("ID不能为空"), nil)
+		return
+	}
+	// 查询
+	oaeTerm, err := o.service.GetByID(ID)
+	handler.HandleResponse(c, err, oaeTerm)
+}
