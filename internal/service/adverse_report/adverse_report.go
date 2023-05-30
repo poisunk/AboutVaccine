@@ -74,17 +74,17 @@ func (a *AdverseReportCommon) GetList(page, pageSize int) ([]*schema.AdverseEven
 	if err != nil {
 		return nil, total, err
 	}
-	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0, len(events))
 	var wg sync.WaitGroup
 	for _, event := range events {
 		eventInfo := a.FormatEventBriefInfo(event)
 		wg.Add(1)
-		go func() {
+		go func(event *entity.AdverseEvent) {
 			defer wg.Done()
 			symptomList, _ := a.GetSymptomListByEventId(event.Id)
 			eventInfo.SymptomList = symptomList
 			eventInfo.UserName = a.LoadUserName(event.Uid)
-		}()
+		}(event)
 		eventInfos = append(eventInfos, eventInfo)
 	}
 	wg.Wait()
@@ -96,17 +96,17 @@ func (a *AdverseReportCommon) GetListByKeyword(keyword string, page, pageSize in
 	if err != nil {
 		return nil, total, err
 	}
-	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0, len(events))
 	var wg sync.WaitGroup
 	for _, event := range events {
 		eventInfo := a.FormatEventBriefInfo(event)
 		wg.Add(1)
-		go func() {
+		go func(event *entity.AdverseEvent) {
 			defer wg.Done()
 			symptomList, _ := a.GetSymptomListByEventId(event.Id)
 			eventInfo.SymptomList = symptomList
 			eventInfo.UserName = a.LoadUserName(event.Uid)
-		}()
+		}(event)
 		eventInfos = append(eventInfos, eventInfo)
 	}
 	wg.Wait()
@@ -118,7 +118,7 @@ func (a *AdverseReportCommon) GetListByUid(uid int64, page, pageSize int) ([]*sc
 	if err != nil {
 		return nil, total, err
 	}
-	eventInfos := make([]*schema.AdverseEventBriefInfo, 0)
+	eventInfos := make([]*schema.AdverseEventBriefInfo, 0, len(events))
 	var wg sync.WaitGroup
 	for _, event := range events {
 		eventInfo := a.FormatEventBriefInfo(event)
@@ -141,19 +141,25 @@ func (a *AdverseReportCommon) Create(schema *schema.AdverseEventAdd, uid *int64)
 	if err != nil {
 		return err
 	}
-	for _, s := range symptoms {
-		s.EventId = event.Id
+	if len(symptoms) > 0 {
+		for _, s := range symptoms {
+			s.EventId = event.Id
+		}
+		err = a.adverseSymptomRepo.CreateList(symptoms)
+		if err != nil {
+			go a.Delete(event.Id)
+			return err
+		}
 	}
-	err = a.adverseSymptomRepo.CreateList(symptoms)
-	if err != nil {
-		return err
-	}
-	for _, v := range vaccines {
-		v.EventId = event.Id
-	}
-	err = a.adverseVaccineRepo.CreateList(vaccines)
-	if err != nil {
-		return err
+	if len(vaccines) > 0 {
+		for _, v := range vaccines {
+			v.EventId = event.Id
+		}
+		err = a.adverseVaccineRepo.CreateList(vaccines)
+		if err != nil {
+			go a.Delete(event.Id)
+			return err
+		}
 	}
 	return nil
 }

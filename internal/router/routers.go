@@ -65,22 +65,6 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 		apiGroup.POST("/user/register", a.UserController.Register)
 		apiGroup.DELETE("/user/logout", a.UserController.Logout)
 		apiGroup.GET("/user/search", a.UserController.SearchUser)
-		//// 问卷系统
-		//// 问卷
-		//apiGroup.GET("/questionnaire", controller.GetQuestionnaireList)
-		//apiGroup.POST("/questionnaire", jwt.Auth, controller.CreateQuestionnaire)
-		//apiGroup.DELETE("/questionnaire/:id", jwt.Auth, controller.DeleteQuestionnaireById)
-		//apiGroup.GET("/questionnaire/user/:uid", controller.GetQuestionnaireByUid)
-		//// 问题
-		//apiGroup.GET("/questionnaire/:id/questions", controller.GetQuestionListByQId)
-		//apiGroup.GET("/questionnaire/questions/type", controller.GetQuestionTypeList)
-		//apiGroup.POST("/questionnaire/:id/questions", jwt.Auth, controller.CreateQuestion)
-		//apiGroup.DELETE("/questionnaire/:id/questions/:qid", jwt.Auth, controller.DeleteQuestion)
-		//// 回答
-		//apiGroup.GET("/questionnaire/:id/response", jwt.Auth, controller.GetResponse)
-		//apiGroup.DELETE("/questionnaire/:id/response", jwt.Auth, controller.DeleteResponse)
-		//apiGroup.GET("/questionnaire/response/mine", jwt.Auth, controller.GetMineResponse)
-		//apiGroup.POST("/questionnaire/:id/response", jwt.Auth, controller.CreateResponse)
 		// Vaers不良反应检索
 		apiGroup.GET("/vaers", a.VaersController.SearchVaersResult)
 		apiGroup.GET("/vaers/symptom", a.VaersController.GetVaersSymptomList)

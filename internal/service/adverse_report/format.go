@@ -94,7 +94,7 @@ func (a *AdverseReportCommon) FormatEntity(schema *schema.AdverseEventAdd, uid *
 		RapporteurPhone:     schema.RapporteurPhone,
 		RapporteurAddress:   schema.RapporteurAddress,
 	}
-	vaccineList := make([]*entity.AdverseVaccine, 0)
+	vaccineList := make([]*entity.AdverseVaccine, 0, len(schema.VaccineList))
 	for _, v := range schema.VaccineList {
 		vaccine := &entity.AdverseVaccine{
 			VaccineId:     v.VaccineId,
@@ -105,7 +105,7 @@ func (a *AdverseReportCommon) FormatEntity(schema *schema.AdverseEventAdd, uid *
 		}
 		vaccineList = append(vaccineList, vaccine)
 	}
-	symptomList := make([]*entity.AdverseSymptom, 0)
+	symptomList := make([]*entity.AdverseSymptom, 0, len(schema.SymptomList))
 	for _, s := range schema.SymptomList {
 		symptom := &entity.AdverseSymptom{
 			Symptom: s.Symptom,
