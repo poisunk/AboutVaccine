@@ -41,6 +41,7 @@ func (a *AdverseReportCommon) FormatEventInfo(entity *entity.AdverseEvent) *sche
 		TreatmentDepartment: entity.TreatmentDepartment,
 		Rapporteur:          entity.Rapporteur,
 		RapporteurPhone:     entity.RapporteurPhone,
+		RapporteurAddress:   entity.RapporteurAddress,
 	}
 	return eventInfo
 }

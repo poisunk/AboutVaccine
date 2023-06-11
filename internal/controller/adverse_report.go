@@ -43,7 +43,7 @@ func (a *AdverseReportController) GetAdverseEvent(c *gin.Context) {
 	// 获取page, pageSize
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "20"))
-	// 1. 获取id, 是否通过id查询
+	// 1. 通过id查询
 	id := c.Query("id")
 	if len(id) != 0 {
 		// 根据id查询
