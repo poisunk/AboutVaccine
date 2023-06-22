@@ -1,8 +1,8 @@
 package schema
 
 import (
-	"about-vaccine/internal/entity"
 	"time"
+	"vax/internal/entity"
 )
 
 type Issue struct {

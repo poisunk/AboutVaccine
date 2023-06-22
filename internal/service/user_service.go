@@ -1,13 +1,13 @@
 package service
 
 import (
-	"about-vaccine/internal/middleware/jwt"
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service/user"
-	"about-vaccine/internal/utile"
 	"errors"
 	"log"
 	"strconv"
+	"vax/internal/middleware/jwt"
+	"vax/internal/schema"
+	"vax/internal/service/user"
+	"vax/internal/utile"
 )
 
 type UserService struct {

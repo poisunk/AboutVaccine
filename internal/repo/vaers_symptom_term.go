@@ -1,9 +1,9 @@
 package repo
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/service/vaers"
+	"vax/internal/base/dao"
+	"vax/internal/entity"
+	"vax/internal/service/vaers"
 )
 
 type VaersSymptomTermRepo struct {

@@ -1,8 +1,8 @@
 package vaers
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/schema"
+	"vax/internal/entity"
+	"vax/internal/schema"
 )
 
 type VaersVaxTermRepo interface {

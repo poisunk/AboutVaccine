@@ -1,12 +1,12 @@
 package service
 
 import (
-	"about-vaccine/internal/service/adverse_report"
-	"about-vaccine/internal/service/oae"
-	"about-vaccine/internal/service/user"
-	"about-vaccine/internal/service/vaccine"
-	"about-vaccine/internal/service/vaers"
 	"github.com/google/wire"
+	"vax/internal/service/adverse_report"
+	"vax/internal/service/oae"
+	"vax/internal/service/user"
+	"vax/internal/service/vaccine"
+	"vax/internal/service/vaers"
 )
 
 var ProviderSetService = wire.NewSet(

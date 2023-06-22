@@ -1,6 +1,10 @@
 package main
 
 func main() {
+	RunApp()
+}
+
+func RunApp() {
 	r, err := InitApplication()
 	if err != nil {
 		panic(err)

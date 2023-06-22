@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/entity"
+	"vax/internal/base/dao"
+	"vax/internal/entity"
 )
 
 type IssueRepo struct {

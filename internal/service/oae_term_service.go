@@ -1,11 +1,11 @@
 package service
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/service/oae"
 	"errors"
 	"log"
 	"strconv"
+	"vax/internal/entity"
+	"vax/internal/service/oae"
 )
 
 type OaeTermService struct {

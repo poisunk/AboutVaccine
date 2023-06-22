@@ -7,16 +7,16 @@
 package main
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/controller"
-	"about-vaccine/internal/repo"
-	"about-vaccine/internal/router"
-	"about-vaccine/internal/service"
-	"about-vaccine/internal/service/adverse_report"
-	"about-vaccine/internal/service/oae"
-	"about-vaccine/internal/service/user"
-	"about-vaccine/internal/service/vaccine"
-	"about-vaccine/internal/service/vaers"
+	"vax/internal/base/dao"
+	"vax/internal/controller"
+	"vax/internal/repo"
+	"vax/internal/router"
+	"vax/internal/service"
+	"vax/internal/service/adverse_report"
+	"vax/internal/service/oae"
+	"vax/internal/service/user"
+	"vax/internal/service/vaccine"
+	"vax/internal/service/vaers"
 )
 
 // Injectors from wire.go:

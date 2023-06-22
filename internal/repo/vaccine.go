@@ -1,10 +1,10 @@
 package repo
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/service/vaccine"
-	"about-vaccine/internal/utile"
+	"vax/internal/base/dao"
+	"vax/internal/entity"
+	"vax/internal/service/vaccine"
+	"vax/internal/utile"
 )
 
 type VaccineRepo struct {

@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"about-vaccine/internal/config"
-	"about-vaccine/internal/schema"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+	"vax/internal/config"
+	"vax/internal/schema"
 )
 
 type RespBody struct {

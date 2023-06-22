@@ -3,6 +3,6 @@ WORKDIR $GOPATH/src/gin_docker
 ADD . ./
 ENV GO111MODULE=on
 ENV GOPROXY="https://goproxy.io"
-RUN go build -o gin_docker about-vaccine/app
+RUN go build -o app vax/app
 EXPOSE 8080
-ENTRYPOINT  ["./gin_docker"]
+ENTRYPOINT  ["./app"]

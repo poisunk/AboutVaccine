@@ -1,8 +1,8 @@
 package vaccine
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/schema"
+	"vax/internal/entity"
+	"vax/internal/schema"
 )
 
 func (vc *VaccineCommon) FormatVaccineInfo(entity *entity.Vaccine) *schema.VaccineInfo {

@@ -1,9 +1,9 @@
 package repo
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/service/oae"
+	"vax/internal/base/dao"
+	"vax/internal/entity"
+	"vax/internal/service/oae"
 )
 
 type OAETermRepo struct {

@@ -1,11 +1,11 @@
 package service
 
 import (
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service/vaccine"
 	"errors"
 	"log"
 	"strconv"
+	"vax/internal/schema"
+	"vax/internal/service/vaccine"
 )
 
 type VaccineService struct {

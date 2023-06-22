@@ -1,9 +1,9 @@
 package vaers
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/schema"
 	"sync"
+	"vax/internal/entity"
+	"vax/internal/schema"
 )
 
 type VaersResultRepo interface {

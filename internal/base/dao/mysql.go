@@ -1,8 +1,8 @@
 package dao
 
 import (
-	"about-vaccine/internal/config"
 	_ "github.com/go-sql-driver/mysql"
+	"vax/internal/config"
 	"xorm.io/xorm"
 )
 

@@ -1,6 +1,6 @@
 package oae
 
-import "about-vaccine/internal/entity"
+import "vax/internal/entity"
 
 type OAETermRepo interface {
 	GetByIRI(string) (*entity.OAETerm, bool, error)

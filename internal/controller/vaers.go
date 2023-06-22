@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"about-vaccine/internal/base/handler"
-	"about-vaccine/internal/service"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"vax/internal/base/handler"
+	"vax/internal/service"
 )
 
 type VaersController struct {

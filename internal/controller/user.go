@@ -1,12 +1,12 @@
 package controller
 
 import (
-	"about-vaccine/internal/base/handler"
-	"about-vaccine/internal/config"
-	"about-vaccine/internal/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
+	"vax/internal/base/handler"
+	"vax/internal/config"
+	"vax/internal/service"
 )
 
 type UserController struct {

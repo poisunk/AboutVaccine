@@ -1,10 +1,10 @@
 package jwt
 
 import (
-	"about-vaccine/internal/config"
 	"github.com/dgrijalva/jwt-go"
 	"strconv"
 	"time"
+	"vax/internal/config"
 )
 
 func GenerateToken(uid int64, name string) (string, error) {

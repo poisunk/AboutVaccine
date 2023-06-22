@@ -1,10 +1,10 @@
 package service
 
 import (
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service/vaers"
 	"errors"
 	"log"
+	"vax/internal/schema"
+	"vax/internal/service/vaers"
 )
 
 type VaersService struct {

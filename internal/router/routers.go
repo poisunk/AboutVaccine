@@ -1,9 +1,9 @@
 package router
 
 import (
-	"about-vaccine/internal/controller"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"vax/internal/controller"
 )
 
 type APIRouter struct {

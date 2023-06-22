@@ -1,12 +1,12 @@
 package service
 
 import (
-	"about-vaccine/internal/middleware/jwt"
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service/adverse_report"
 	"errors"
 	"log"
 	"strconv"
+	"vax/internal/middleware/jwt"
+	"vax/internal/schema"
+	"vax/internal/service/adverse_report"
 )
 
 type AdverseReportService struct {

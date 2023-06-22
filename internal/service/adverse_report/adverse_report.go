@@ -1,11 +1,11 @@
 package adverse_report
 
 import (
-	"about-vaccine/internal/entity"
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service/user"
-	"about-vaccine/internal/service/vaccine"
 	"sync"
+	"vax/internal/entity"
+	"vax/internal/schema"
+	"vax/internal/service/user"
+	"vax/internal/service/vaccine"
 )
 
 type AdverseEventRepo interface {

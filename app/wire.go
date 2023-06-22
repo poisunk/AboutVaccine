@@ -4,12 +4,12 @@
 package main
 
 import (
-	"about-vaccine/internal/base/dao"
-	"about-vaccine/internal/controller"
-	"about-vaccine/internal/repo"
-	"about-vaccine/internal/router"
-	"about-vaccine/internal/service"
 	"github.com/google/wire"
+	"vax/internal/base/dao"
+	"vax/internal/controller"
+	"vax/internal/repo"
+	"vax/internal/router"
+	"vax/internal/service"
 )
 
 func InitApplication() (*router.APIRouter, error) {

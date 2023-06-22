@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"about-vaccine/internal/base/handler"
-	"about-vaccine/internal/schema"
-	"about-vaccine/internal/service"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
+	"vax/internal/base/handler"
+	"vax/internal/schema"
+	"vax/internal/service"
 )
 
 type AdverseReportController struct {
