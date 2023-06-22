@@ -6,7 +6,7 @@ import (
 	"vax/internal/controller"
 )
 
-type APIRouter struct {
+type ApiRouter struct {
 	UserController         *controller.UserController
 	VaersController        *controller.VaersController
 	VaccineController      *controller.VaccineController
@@ -14,14 +14,14 @@ type APIRouter struct {
 	AdverseEventController *controller.AdverseReportController
 }
 
-func NewAPIRouter(
+func NewApiRouter(
 	userController *controller.UserController,
 	vaersController *controller.VaersController,
 	vaccineController *controller.VaccineController,
 	oaeTermController *controller.OAETermController,
 	adverseEventController *controller.AdverseReportController,
-) *APIRouter {
-	return &APIRouter{
+) *ApiRouter {
+	return &ApiRouter{
 		UserController:         userController,
 		VaersController:        vaersController,
 		VaccineController:      vaccineController,
@@ -30,12 +30,12 @@ func NewAPIRouter(
 	}
 }
 
-func (a *APIRouter) Run(address string) error {
+func (a *ApiRouter) Run(address string) error {
 	r := a.InitEngine()
 	return r.Run(address)
 }
 
-func (a *APIRouter) InitEngine() *gin.Engine {
+func (a *ApiRouter) InitEngine() *gin.Engine {
 	r := gin.Default()
 	// 解决跨域问题
 	r.Use(a.Cors())
@@ -43,7 +43,7 @@ func (a *APIRouter) InitEngine() *gin.Engine {
 	return r
 }
 
-func (a *APIRouter) SetupRouters(r *gin.Engine) {
+func (a *ApiRouter) SetupRouters(r *gin.Engine) {
 	apiGroup := r.Group("/api")
 	{
 		// VaccineCFDA数据，来自CFDA官网
@@ -73,7 +73,7 @@ func (a *APIRouter) SetupRouters(r *gin.Engine) {
 }
 
 // Cors 解决跨域问题
-func (a *APIRouter) Cors() gin.HandlerFunc {
+func (a *ApiRouter) Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		origin := c.Request.Header.Get("Origin")

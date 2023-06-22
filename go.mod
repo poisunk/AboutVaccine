@@ -7,8 +7,9 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/wire v0.5.0
-	github.com/rs/zerolog v1.15.0
+	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/spf13/cobra v0.0.3
+	gopkg.in/yaml.v3 v3.0.1
 	xorm.io/xorm v1.3.2
 )
 

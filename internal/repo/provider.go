@@ -19,5 +19,4 @@ var ProviderSetRepo = wire.NewSet(
 	NewVaersSymptomTermRepo,
 	NewVaersVaxRepo,
 	NewVaersVaxTermRepo,
-	NewIssueRepo,
 )

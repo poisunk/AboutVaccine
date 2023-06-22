@@ -8,9 +8,11 @@ package main
 
 import (
 	"vax/internal/base/dao"
+	"vax/internal/config"
 	"vax/internal/controller"
 	"vax/internal/repo"
 	"vax/internal/router"
+	"vax/internal/server"
 	"vax/internal/service"
 	"vax/internal/service/adverse_report"
 	"vax/internal/service/oae"
@@ -21,8 +23,8 @@ import (
 
 // Injectors from wire.go:
 
-func InitApplication() (*router.APIRouter, error) {
-	engine, err := dao.NewEngine()
+func InitApplication(serverConf *config.Server, databaseConf *config.Database) (*server.AppServer, error) {
+	engine, err := dao.NewEngine(databaseConf)
 	if err != nil {
 		return nil, err
 	}
@@ -57,6 +59,7 @@ func InitApplication() (*router.APIRouter, error) {
 	adverseResultCommon := adverse_report.NewAdverseResultCommon(adverseEventRepo, adverseSymptomRepo, adverseVaccineRepo, adverseResultRepo, vaccineCommon, oaeTermCommon)
 	adverseReportService := service.NewAdverseReportService(adverseReportCommon, adverseResultCommon, vaccineService)
 	adverseReportController := controller.NewAdverseEventController(adverseReportService)
-	apiRouter := router.NewAPIRouter(userController, vaersController, vaccineController, oaeTermController, adverseReportController)
-	return apiRouter, nil
+	apiRouter := router.NewApiRouter(userController, vaersController, vaccineController, oaeTermController, adverseReportController)
+	appServer := server.NewAppServer(apiRouter, serverConf)
+	return appServer, nil
 }
