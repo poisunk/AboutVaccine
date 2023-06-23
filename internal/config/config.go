@@ -3,6 +3,7 @@ package config
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"os"
 )
 
 const JwtSecret = "AboutVaccine"
@@ -31,7 +32,18 @@ func SaveConfig(conf *AllConfig) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile("/configs/config.yaml", data, 0644)
+	// 检查文件是否存在
+	_, err = os.Stat("/config.yaml")
+	if os.IsNotExist(err) {
+		file, err := os.Create("/config.yaml")
+		defer file.Close()
+		if err != nil {
+			return err
+		}
+	} else if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile("/config.yaml", data, 0644)
 	if err != nil {
 		return err
 	}
@@ -40,7 +52,7 @@ func SaveConfig(conf *AllConfig) error {
 
 func ReadConfig() (*AllConfig, error) {
 	conf := &AllConfig{}
-	data, err := ioutil.ReadFile("/configs/config.yaml")
+	data, err := ioutil.ReadFile("/config.yaml")
 	if err != nil {
 		return conf, err
 	}
