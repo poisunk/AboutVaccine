@@ -55,8 +55,10 @@ func InitConfigs() {
 		driver = "splite3"
 		connection = "/data/vax.db"
 	}
-	conf.Database.Driver = driver
-	conf.Database.Connection = connection
+	conf.Database = &config.Database{
+		Driver:     driver,
+		Connection: connection,
+	}
 	// 服务器配置
 	port := os.Getenv("SERVER_PORT")
 	if len(port) == 0 {
@@ -64,7 +66,9 @@ func InitConfigs() {
 		fmt.Println("默认端口: 8080")
 		port = "8080"
 	}
-	conf.Server.Port = port
+	conf.Server = &config.Server{
+		Port: port,
+	}
 	// 保存配置
 	err := config.SaveConfig(conf)
 	if err != nil {
