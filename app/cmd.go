@@ -52,7 +52,7 @@ func InitConfigs() {
 		if err != nil {
 			os.Exit(1)
 		}
-		driver = "splite3"
+		driver = "sqlite"
 		connection = "/data/vax.db"
 	}
 	conf.Database = &config.Database{
