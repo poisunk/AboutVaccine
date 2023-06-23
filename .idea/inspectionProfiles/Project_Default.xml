@@ -14,6 +14,7 @@
         <method importPath="strings" receiver="*Builder" name="WriteRune" />
         <method importPath="math/rand" receiver="*Rand" name="Read" />
         <method importPath="about-vaccine/internal/service/adverse_report" receiver="*AdverseReportCommon" name="LoadVaccineAndSymptomList" />
+        <method importPath="os" receiver="*File" name="Close" />
       </methods>
     </inspection_tool>
   </profile>
